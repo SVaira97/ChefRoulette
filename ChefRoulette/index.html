@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chef Roulette — MVP</title>
+  <title>Chef Roulette — Beta</title>
 
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG1PK6CJ88"></script>
@@ -33,6 +33,8 @@
       --border-strong: rgba(0,0,0,0.32);
       --shadow: 0 14px 40px rgba(0,0,0,0.25);
       --radius: 18px;
+
+      --focus: rgba(255,154,76,0.25);
     }
 
     * { box-sizing: border-box; }
@@ -53,15 +55,18 @@
 
     .container {
       width: 100%;
-      max-width: 980px;
+      max-width: 860px;
       display: grid;
-      gap: 18px;
+      gap: 16px;
     }
 
     header {
-      display: grid;
-      gap: 10px;
-      padding: 22px 22px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 18px 18px 14px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--card);
@@ -69,11 +74,10 @@
       backdrop-filter: blur(10px);
     }
 
-    .brandbar {
+    .brand {
       display: flex;
       align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -81,17 +85,22 @@
       margin: 0;
       font-weight: 900;
       letter-spacing: -0.04em;
-      font-size: clamp(28px, 4vw, 42px);
+      font-size: clamp(26px, 4vw, 40px);
       line-height: 1.05;
       text-transform: uppercase;
     }
 
-    .tagline {
-      margin: 0;
-      max-width: 70ch;
-      line-height: 1.45;
-      font-size: 14px;
-      color: rgba(255,255,255,0.92);
+    .beta {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.30);
+      background: rgba(0,0,0,0.12);
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     .pill {
@@ -107,18 +116,16 @@
       white-space: nowrap;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-    }
-
-    @media (max-width: 860px) {
-      .grid { grid-template-columns: 1fr; }
+    .tagline {
+      margin: 6px 0 0;
+      width: 100%;
+      line-height: 1.45;
+      font-size: 14px;
+      color: rgba(255,255,255,0.92);
     }
 
     .card {
-      padding: 20px;
+      padding: 18px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--card);
@@ -128,49 +135,51 @@
 
     .card h2 {
       margin: 0 0 10px;
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
     .muted { color: rgba(255,255,255,0.86); }
+    .small { font-size: 13px; line-height: 1.5; }
 
-    .roulette {
+    /* Filtros */
+    .filters {
       display: grid;
-      gap: 14px;
-    }
-
-    .stage {
-      border: 1px dashed rgba(0,0,0,0.30);
-      border-radius: 16px;
-      padding: 16px;
-      background: rgba(255,255,255,0.08);
-      min-height: 128px;
-      display: grid;
-      align-content: center;
-      gap: 8px;
-    }
-
-    .result-name {
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      margin: 0;
-      color: var(--text);
-    }
-
-    .result-meta {
-      margin: 0;
-      line-height: 1.4;
-      color: rgba(255,255,255,0.88);
-    }
-
-    .actions {
-      display: flex;
+      grid-template-columns: 1fr 1fr auto;
       gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .label {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.92);
+    }
+
+    select {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.30);
+      background: rgba(255,255,255,0.92);
+      color: rgba(0,0,0,0.88);
+      font-weight: 700;
+      font-size: 14px;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: rgba(0,0,0,0.45);
+      box-shadow: 0 0 0 3px var(--focus);
     }
 
     button, a.btn {
@@ -182,13 +191,14 @@
       border-radius: 14px;
       cursor: pointer;
       text-decoration: none;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 14px;
       transition: transform 120ms ease, background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       justify-content: center;
+      white-space: nowrap;
     }
 
     button:hover, a.btn:hover {
@@ -207,6 +217,11 @@
       background: linear-gradient(180deg, rgba(175,77,3,1), rgba(175,77,3,0.88));
     }
 
+    button.ghost {
+      background: rgba(0,0,0,0.10);
+      border-color: rgba(0,0,0,0.30);
+    }
+
     button:disabled {
       opacity: 0.7;
       cursor: not-allowed;
@@ -214,60 +229,127 @@
       box-shadow: none;
     }
 
-    .spinnerline {
-      height: 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.25);
-      background: rgba(255,255,255,0.10);
-      overflow: hidden;
-      position: relative;
+    .roulette {
+      display: grid;
+      gap: 12px;
     }
 
-    .spinnerline::before {
+    .stage {
+      border: 1px dashed rgba(0,0,0,0.30);
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(255,255,255,0.08);
+      min-height: 160px;
+      display: grid;
+      align-content: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wheelWrap {
+      display: grid;
+      place-items: center;
+      gap: 12px;
+    }
+
+    .wheelRow {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .wheelBox {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      display: grid;
+      place-items: center;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 20px solid rgba(0,0,0,0.55);
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.18));
+      z-index: 2;
+    }
+
+    .wheel {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: conic-gradient(
+        rgba(255,255,255,0.90) 0deg 45deg,
+        rgba(0,0,0,0.10) 45deg 90deg,
+        rgba(255,255,255,0.90) 90deg 135deg,
+        rgba(0,0,0,0.10) 135deg 180deg,
+        rgba(255,255,255,0.90) 180deg 225deg,
+        rgba(0,0,0,0.10) 225deg 270deg,
+        rgba(255,255,255,0.90) 270deg 315deg,
+        rgba(0,0,0,0.10) 315deg 360deg
+      );
+      border: 2px solid rgba(0,0,0,0.35);
+      box-shadow: 0 18px 28px rgba(0,0,0,0.18);
+      position: relative;
+      transform: rotate(0deg);
+      transition: transform 900ms cubic-bezier(.1,.8,.1,1);
+    }
+
+    .wheel::after {
       content: "";
       position: absolute;
-      inset: 0;
-      width: 40%;
-      background: rgba(255,154,76,0.85);
-      transform: translateX(-100%);
-      animation: slide 900ms linear infinite;
-      display: none;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.55);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
     }
 
-    .is-spinning .spinnerline::before { display: block; }
-
-    @keyframes slide {
-      to { transform: translateX(250%); }
+    .resultBlock {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.22);
+      background: rgba(255,255,255,0.10);
     }
 
-    .small {
-      font-size: 13px;
-      line-height: 1.5;
+    .result-name {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: var(--text);
     }
 
-    .list {
-      display: grid;
+    .result-meta {
+      margin: 6px 0 0;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.88);
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
       gap: 10px;
-      margin: 0;
-      padding-left: 18px;
-      color: rgba(255,255,255,0.88);
-    }
-
-    .footer-note {
-      margin: 0;
-      color: rgba(255,255,255,0.88);
-      font-size: 12px;
-      line-height: 1.5;
-      text-align: center;
-      opacity: 0.95;
+      flex-wrap: wrap;
+      margin-top: 4px;
     }
 
     .hidden { display: none !important; }
 
+    /* Email */
     .email-form {
-      margin-top: 14px;
+      margin-top: 10px;
       padding: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(0,0,0,0.22);
       border-radius: 16px;
       background: rgba(255,255,255,0.10);
     }
@@ -286,19 +368,34 @@
 
     .email-input:focus {
       border-color: rgba(0,0,0,0.45);
-      box-shadow: 0 0 0 3px rgba(255,154,76,0.25);
+      box-shadow: 0 0 0 3px var(--focus);
     }
 
     .thanks {
-      margin-top: 14px;
+      margin-top: 10px;
       padding: 14px;
       border: 1px solid rgba(0,0,0,0.22);
       border-radius: 16px;
       background: rgba(255,255,255,0.10);
     }
 
+    .footer-note {
+      margin: 0;
+      color: rgba(255,255,255,0.88);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 720px) {
+      .wheelRow { grid-template-columns: 1fr; }
+      .wheelBox { margin: 0 auto; }
+    }
+
     @media (max-width: 520px) {
       .actions > * { flex: 1 1 auto; }
+      .filters { grid-template-columns: 1fr; }
       .email-row { flex-direction: column; align-items: stretch; }
       .email-input { min-width: auto; width: 100%; }
     }
@@ -308,123 +405,149 @@
 <body>
   <main class="container">
     <header>
-      <div class="brandbar">
+      <div class="brand">
         <h1 class="logo">Chef Roulette</h1>
-        <div class="pill" id="statsPill"><span id="statsLabel">Restaurantes</span>: <span id="count">0</span></div>
+        <span class="beta">Beta</span>
       </div>
+
+      <div class="pill">Restaurantes: <span id="count">0</span></div>
+
       <p class="tagline">
-        Gira y deja que la ruleta elija. Luego actúa: abre Maps, pide delivery o comparte el resultado.
+        Filtra por tipo o zona, gira y deja que la ruleta elija. Luego actúa: abre Maps, pide delivery o comparte el resultado.
       </p>
     </header>
 
-    <section class="grid">
-      <div class="card roulette" id="rouletteCard">
-        <h2>Ruleta</h2>
+    <section class="card roulette" id="rouletteCard">
+      <h2>Ruleta</h2>
 
-        <div class="stage" id="stage">
-          <div id="emptyState">
-            <p class="muted small" style="margin:0;">
-              Pulsa “Girar ruleta”. Te daremos una opción y podrás abrir Maps, pedir delivery o girar de nuevo.
-            </p>
-          </div>
-
-          <div id="spinningState" class="hidden">
-            <p class="muted small" style="margin:0;">Seleccionando una opción…</p>
-            <div class="spinnerline" aria-hidden="true"></div>
-          </div>
-
-          <div id="resultState" class="hidden">
-            <p class="result-name" id="resultName">—</p>
-            <p class="result-meta" id="resultMeta">—</p>
-          </div>
+      <div class="filters">
+        <div class="field">
+          <div class="label">Tipo</div>
+          <select id="typeSelect" aria-label="Filtrar por tipo">
+            <option value="">Todos</option>
+          </select>
         </div>
 
-        <div class="actions">
-          <button class="primary" id="spinBtn" type="button">Girar ruleta</button>
-
-          <a class="btn hidden" id="mapsBtn" target="_blank" rel="noopener noreferrer">Ir al restaurante</a>
-          <a class="btn hidden" id="deliveryBtn" target="_blank" rel="noopener noreferrer">Pedir delivery</a>
-
-          <button class="hidden" id="copyBtn" type="button">Copiar</button>
-          <button class="hidden" id="spinAgainBtn" type="button">Girar otra vez</button>
+        <div class="field">
+          <div class="label">Zona</div>
+          <select id="zoneSelect" aria-label="Filtrar por zona">
+            <option value="">Todas</option>
+          </select>
         </div>
 
-        <form
-          name="early-access"
-          method="POST"
-          action="/"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-          class="email-form hidden"
-          id="emailForm"
-        >
-          <input type="hidden" name="form-name" value="early-access" />
-          <p class="hidden">
-            <label>Si ves esto, no lo completes: <input name="bot-field" /></label>
-          </p>
+        <div class="field">
+          <div class="label">&nbsp;</div>
+          <button class="ghost" id="clearFiltersBtn" type="button">Limpiar</button>
+        </div>
+      </div>
 
-          <p class="small" style="margin: 0 0 8px;">
-            ¿Quieres acceso anticipado a la app y guardar tus preferencias?
-          </p>
+      <div class="stage" id="stage">
+        <div class="wheelWrap">
+          <div class="wheelRow">
+            <div class="wheelBox" aria-hidden="true">
+              <div class="pointer"></div>
+              <div class="wheel" id="wheel"></div>
+            </div>
 
-          <div class="email-row">
-            <input class="email-input" type="email" name="email" placeholder="tu@email.com" required />
-            <button type="submit" class="primary" id="emailSubmitBtn">Avisadme</button>
+            <div class="resultBlock">
+              <div id="emptyState">
+                <p class="muted small" style="margin:0;">
+                  Elige filtros (si quieres) y pulsa “Girar ruleta”.
+                </p>
+                <p class="muted small" style="margin:8px 0 0;">
+                  Si filtras mucho y no hay opciones, te lo diremos.
+                </p>
+              </div>
+
+              <div id="spinningState" class="hidden">
+                <p class="muted small" style="margin:0;">Girando…</p>
+                <p class="muted small" style="margin:8px 0 0;">Seleccionando una opción.</p>
+              </div>
+
+              <div id="resultState" class="hidden">
+                <p class="result-name" id="resultName">—</p>
+                <p class="result-meta" id="resultMeta">—</p>
+              </div>
+            </div>
           </div>
 
-          <p class="small muted" style="margin: 8px 0 0;">
-            No enviamos spam. Solo avisos de la beta.
-          </p>
-        </form>
+          <div class="actions">
+            <button class="primary" id="spinBtn" type="button">Girar ruleta</button>
 
-        <div class="thanks hidden" id="emailThanks">
-          <p style="margin:0; font-weight: 900;">Recibido.</p>
-          <p class="small muted" style="margin:6px 0 0;">
-            Te avisaremos cuando la beta esté lista.
-          </p>
+            <a class="btn hidden" id="mapsBtn" target="_blank" rel="noopener noreferrer">Ir al restaurante</a>
+            <a class="btn hidden" id="deliveryBtn" target="_blank" rel="noopener noreferrer">Pedir delivery</a>
+
+            <button class="hidden" id="copyBtn" type="button">Copiar</button>
+            <button class="hidden" id="spinAgainBtn" type="button">Girar otra vez</button>
+          </div>
+        </div>
+      </div>
+
+      <form
+        name="early-access"
+        method="POST"
+        action="/"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="email-form hidden"
+        id="emailForm"
+      >
+        <input type="hidden" name="form-name" value="early-access" />
+        <p class="hidden">
+          <label>Si ves esto, no lo completes: <input name="bot-field" /></label>
+        </p>
+
+        <p class="small" style="margin: 0 0 8px;">
+          ¿Quieres acceso anticipado y actualizaciones de la beta?
+        </p>
+
+        <div class="email-row">
+          <input class="email-input" type="email" name="email" placeholder="tu@email.com" required />
+          <button type="submit" class="primary" id="emailSubmitBtn">Avisadme</button>
         </div>
 
-        <p class="muted small" id="hint" style="margin: 10px 0 0;">
-          Este MVP mide: giros, clics (Maps/delivery), copias, registros y carga de datos.
+        <p class="small muted" style="margin: 8px 0 0;">
+          No enviamos spam. Solo avisos.
+        </p>
+      </form>
+
+      <div class="thanks hidden" id="emailThanks">
+        <p style="margin:0; font-weight: 900;">Recibido.</p>
+        <p class="small muted" style="margin:6px 0 0;">
+          Te avisaremos cuando haya novedades.
         </p>
       </div>
 
-      <aside class="card">
-        <h2>Notas del MVP</h2>
-        <p class="muted small" style="margin:0 0 10px;">
-          Madrid primero. Mostramos “Zona” en el resultado para orientar al usuario.
-        </p>
-        <ol class="list">
-          <li>La ruleta evita repetir opciones recientes.</li>
-          <li>Si existe link de ubicación/delivery, se abre directamente.</li>
-          <li>Si no existe, hacemos búsqueda automática.</li>
-        </ol>
-      </aside>
+      <p class="muted small" id="hint" style="margin: 12px 0 0;">
+        La ruleta usa los datos de Airtable. Cambios en Airtable se reflejan automáticamente.
+      </p>
     </section>
 
     <p class="footer-note">
-      MVP estático, gratuito, listo para iterar rápido y medir lo que importa.
+      Chef Roulette (Beta)
     </p>
   </main>
 
   <script>
-    // Fallback local (si la función falla)
+    // Fallback local
     const FALLBACK_RESTAURANTS = [
-      { id: "r1", name: "La Mesa Invisible", cuisine: "Mediterránea", zone: "Madrid Centro", deliveryUrl: "", mapsUrl: "", image: "" },
-      { id: "r2", name: "Sushi Kintsugi", cuisine: "Japonesa", zone: "Salamanca", deliveryUrl: "", mapsUrl: "", image: "" },
+      { id: "r1", name: "La Mesa Invisible", cuisine: "Mediterránea", zone: "Centro", deliveryUrl: "", mapsUrl: "", image: "" },
+      { id: "r2", name: "Sushi Kintsugi", cuisine: "Sushi", zone: "Salamanca", deliveryUrl: "", mapsUrl: "", image: "" },
       { id: "r3", name: "Brasa Norte", cuisine: "Parrilla", zone: "Chamberí", deliveryUrl: "", mapsUrl: "", image: "" },
       { id: "r4", name: "Pasta & Punto", cuisine: "Italiana", zone: "Retiro", deliveryUrl: "", mapsUrl: "", image: "" },
       { id: "r5", name: "Taco Ritmo", cuisine: "Mexicana", zone: "Malasaña", deliveryUrl: "", mapsUrl: "", image: "" }
     ];
 
-    // Fuente de datos activa (se reemplaza al cargar la Function)
     let RESTAURANTS = [...FALLBACK_RESTAURANTS];
 
-    // Estado mínimo
     const state = {
       recentPickedIds: [],
       isSpinning: false,
-      spinCount: 0
+      spinCount: 0,
+      filters: {
+        cuisine: "",
+        zone: ""
+      }
     };
 
     let lastRestaurant = null;
@@ -459,33 +582,51 @@
       return candidate;
     }
 
-    // Carga desde Netlify Function (backend gratis)
+    function uniqSorted(values) {
+      const s = new Set();
+      for (const v of values) {
+        const t = String(v || "").trim();
+        if (t) s.add(t);
+      }
+      return Array.from(s).sort((a,b) => a.localeCompare(b, "es"));
+    }
+
+    function getFilteredRestaurants() {
+      const cuisine = state.filters.cuisine;
+      const zone = state.filters.zone;
+
+      return RESTAURANTS.filter(r => {
+        const okCuisine = !cuisine || String(r.cuisine).trim() === cuisine;
+        const okZone = !zone || String(r.zone).trim() === zone;
+        return okCuisine && okZone;
+      });
+    }
+
+    // Airtable load
     async function loadRestaurantsFromFunction() {
       try {
         const res = await fetch("/.netlify/functions/restaurants", { cache: "no-store" });
-        if (!res.ok) throw new Error("No se pudo cargar la Function");
-
+        if (!res.ok) throw new Error("Function error");
         const data = await res.json();
-        const list = Array.isArray(data.restaurants) ? data.restaurants : [];
 
-        if (list.length === 0) throw new Error("Lista vacía");
+        const list = Array.isArray(data.restaurants) ? data.restaurants : [];
+        if (list.length === 0) throw new Error("Empty list");
 
         RESTAURANTS = list;
 
         countEl.textContent = String(RESTAURANTS.length);
-        statsLabelEl.textContent = "Restaurantes (Airtable)";
+        buildFilterOptions();
         track("airtable_loaded", { count: RESTAURANTS.length });
       } catch (e) {
         RESTAURANTS = [...FALLBACK_RESTAURANTS];
         countEl.textContent = String(RESTAURANTS.length);
-        statsLabelEl.textContent = "Restaurantes (fallback)";
+        buildFilterOptions();
         track("airtable_failed");
       }
     }
 
     // UI bindings
     const countEl = document.getElementById("count");
-    const statsLabelEl = document.getElementById("statsLabel");
 
     const rouletteCard = document.getElementById("rouletteCard");
     const emptyState = document.getElementById("emptyState");
@@ -501,9 +642,17 @@
     const deliveryBtn = document.getElementById("deliveryBtn");
     const copyBtn = document.getElementById("copyBtn");
 
+    const typeSelect = document.getElementById("typeSelect");
+    const zoneSelect = document.getElementById("zoneSelect");
+    const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+    const wheelEl = document.getElementById("wheel");
+
     const emailForm = document.getElementById("emailForm");
     const emailThanks = document.getElementById("emailThanks");
     const emailSubmitBtn = document.getElementById("emailSubmitBtn");
+
+    let wheelRotation = 0;
 
     function setView(view) {
       emptyState.classList.toggle("hidden", view !== "empty");
@@ -524,6 +673,16 @@
       spinBtn.disabled = isSpinning;
       spinAgainBtn.disabled = isSpinning;
       copyBtn.disabled = isSpinning;
+      typeSelect.disabled = isSpinning;
+      zoneSelect.disabled = isSpinning;
+      clearFiltersBtn.disabled = isSpinning;
+    }
+
+    function spinWheelVisual() {
+      const extraTurns = 720; // dos vueltas
+      const rand = Math.floor(Math.random() * 360);
+      wheelRotation = wheelRotation + extraTurns + rand;
+      wheelEl.style.transform = `rotate(${wheelRotation}deg)`;
     }
 
     function showResult(restaurant) {
@@ -551,19 +710,48 @@
     function spin() {
       if (state.isSpinning) return;
 
-      track("spin");
+      const filtered = getFilteredRestaurants();
+
+      track("spin", {
+        filter_cuisine: state.filters.cuisine || "all",
+        filter_zone: state.filters.zone || "all",
+        pool_size: filtered.length
+      });
 
       setSpinning(true);
       setActionButtons(false);
       setView("spinning");
+      spinWheelVisual();
 
       window.setTimeout(() => {
-        const picked = pickRandomAvoidingRecent(RESTAURANTS, state.recentPickedIds, 3);
+        const picked = pickRandomAvoidingRecent(filtered, state.recentPickedIds, 3);
+
         if (!picked) {
+          // No hay resultados para esos filtros
+          lastRestaurant = null;
           setSpinning(false);
+          setActionButtons(false);
           setView("empty");
+          emptyState.innerHTML = `
+            <p class="muted small" style="margin:0;">
+              No hay restaurantes con esos filtros.
+            </p>
+            <p class="muted small" style="margin:8px 0 0;">
+              Prueba a cambiar Tipo/Zona o pulsa “Limpiar”.
+            </p>
+          `;
           return;
         }
+
+        // restaurar texto por si veníamos de "no hay resultados"
+        emptyState.innerHTML = `
+          <p class="muted small" style="margin:0;">
+            Elige filtros (si quieres) y pulsa “Girar ruleta”.
+          </p>
+          <p class="muted small" style="margin:8px 0 0;">
+            Si filtras mucho y no hay opciones, te lo diremos.
+          </p>
+        `;
 
         state.recentPickedIds.push(picked.id);
         if (state.recentPickedIds.length > 10) state.recentPickedIds.shift();
@@ -604,15 +792,34 @@
       return pairs.join("&");
     }
 
-    // Init
-    countEl.textContent = String(RESTAURANTS.length);
-    statsLabelEl.textContent = "Restaurantes (cargando…)";
-    setView("empty");
-    setActionButtons(false);
+    function buildFilterOptions() {
+      const cuisines = uniqSorted(RESTAURANTS.map(r => r.cuisine));
+      const zones = uniqSorted(RESTAURANTS.map(r => r.zone));
 
-    // Cargar Airtable vía Function
-    loadRestaurantsFromFunction();
+      // conservar selección si existe
+      const currentCuisine = state.filters.cuisine;
+      const currentZone = state.filters.zone;
 
+      typeSelect.innerHTML = `<option value="">Todos</option>` + cuisines.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      zoneSelect.innerHTML = `<option value="">Todas</option>` + zones.map(z => `<option value="${escapeHtml(z)}">${escapeHtml(z)}</option>`).join("");
+
+      typeSelect.value = cuisines.includes(currentCuisine) ? currentCuisine : "";
+      zoneSelect.value = zones.includes(currentZone) ? currentZone : "";
+
+      state.filters.cuisine = typeSelect.value;
+      state.filters.zone = zoneSelect.value;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    // Event listeners
     spinBtn.addEventListener("click", spin);
     spinAgainBtn.addEventListener("click", spin);
     copyBtn.addEventListener("click", copyCurrentResult);
@@ -633,6 +840,24 @@
         cuisine: lastRestaurant.cuisine,
         zone: lastRestaurant.zone
       });
+    });
+
+    typeSelect.addEventListener("change", () => {
+      state.filters.cuisine = typeSelect.value;
+      track("filter_change", { filter: "cuisine", value: state.filters.cuisine || "all" });
+    });
+
+    zoneSelect.addEventListener("change", () => {
+      state.filters.zone = zoneSelect.value;
+      track("filter_change", { filter: "zone", value: state.filters.zone || "all" });
+    });
+
+    clearFiltersBtn.addEventListener("click", () => {
+      state.filters.cuisine = "";
+      state.filters.zone = "";
+      typeSelect.value = "";
+      zoneSelect.value = "";
+      track("filter_clear");
     });
 
     // Email submit (Netlify)
@@ -663,9 +888,20 @@
       }
     });
 
-    window.__chefRoulette = { state, getRestaurants: () => RESTAURANTS, spin };
+    // Init
+    countEl.textContent = String(RESTAURANTS.length);
+    setView("empty");
+    setActionButtons(false);
+    buildFilterOptions();
+    loadRestaurantsFromFunction();
+
+    window.__chefRoulette = {
+      state,
+      getRestaurants: () => RESTAURANTS,
+      getFilteredRestaurants,
+      spin
+    };
   </script>
 </body>
 </html>
-
 
