@@ -1,0 +1,3 @@
+[build]
+  publish = "ChefRoulette"
+  functions = "ChefRoulette/netlify/functions"

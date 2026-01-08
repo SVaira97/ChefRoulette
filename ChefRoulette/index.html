@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chef Roulette — MVP</title>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG1PK6CJ88"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FG1PK6CJ88');
+
+    function track(eventName, params = {}) {
+      if (typeof gtag === "function") {
+        gtag("event", eventName, params);
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg: #F67919;
+      --accent: #AF4D03;
+      --accent2: #FF9A4C;
+      --text: #FFFFFF;
+      --ink: #000000;
+
+      --card: rgba(255,255,255,0.12);
+      --border: rgba(0,0,0,0.22);
+      --border-strong: rgba(0,0,0,0.32);
+      --shadow: 0 14px 40px rgba(0,0,0,0.25);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(900px 540px at 10% 15%, rgba(255,154,76,0.55), transparent 60%),
+        radial-gradient(900px 540px at 90% 30%, rgba(175,77,3,0.45), transparent 60%),
+        var(--bg);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 980px;
+      display: grid;
+      gap: 18px;
+    }
+
+    header {
+      display: grid;
+      gap: 10px;
+      padding: 22px 22px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .brandbar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      margin: 0;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    .tagline {
+      margin: 0;
+      max-width: 70ch;
+      line-height: 1.45;
+      font-size: 14px;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      font-size: 12px;
+      color: rgba(255,255,255,0.92);
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .muted { color: rgba(255,255,255,0.86); }
+
+    .roulette {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stage {
+      border: 1px dashed rgba(0,0,0,0.30);
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(255,255,255,0.08);
+      min-height: 128px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+    }
+
+    .result-name {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .result-meta {
+      margin: 0;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button, a.btn {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 11px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button:hover, a.btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(0,0,0,0.45);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, rgba(175,77,3,1), rgba(175,77,3,0.82));
+      border-color: rgba(0,0,0,0.45);
+    }
+
+    button.primary:hover {
+      background: linear-gradient(180deg, rgba(175,77,3,1), rgba(175,77,3,0.88));
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .spinnerline {
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.25);
+      background: rgba(255,255,255,0.10);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .spinnerline::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 40%;
+      background: rgba(255,154,76,0.85);
+      transform: translateX(-100%);
+      animation: slide 900ms linear infinite;
+      display: none;
+    }
+
+    .is-spinning .spinnerline::before { display: block; }
+
+    @keyframes slide {
+      to { transform: translateX(250%); }
+    }
+
+    .small {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .footer-note {
+      margin: 0;
+      color: rgba(255,255,255,0.88);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+      opacity: 0.95;
+    }
+
+    .hidden { display: none !important; }
+
+    .email-form {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.10);
+    }
+
+    .email-row { display:flex; gap:8px; flex-wrap:wrap; align-items: center; }
+
+    .email-input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.30);
+      font-size: 14px;
+      outline: none;
+      min-width: 220px;
+    }
+
+    .email-input:focus {
+      border-color: rgba(0,0,0,0.45);
+      box-shadow: 0 0 0 3px rgba(255,154,76,0.25);
+    }
+
+    .thanks {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid rgba(0,0,0,0.22);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.10);
+    }
+
+    @media (max-width: 520px) {
+      .actions > * { flex: 1 1 auto; }
+      .email-row { flex-direction: column; align-items: stretch; }
+      .email-input { min-width: auto; width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <div class="brandbar">
+        <h1 class="logo">Chef Roulette</h1>
+        <div class="pill" id="statsPill"><span id="statsLabel">Restaurantes</span>: <span id="count">0</span></div>
+      </div>
+      <p class="tagline">
+        Gira y deja que la ruleta elija. Luego actúa: abre Maps, pide delivery o comparte el resultado.
+      </p>
+    </header>
+
+    <section class="grid">
+      <div class="card roulette" id="rouletteCard">
+        <h2>Ruleta</h2>
+
+        <div class="stage" id="stage">
+          <div id="emptyState">
+            <p class="muted small" style="margin:0;">
+              Pulsa “Girar ruleta”. Te daremos una opción y podrás abrir Maps, pedir delivery o girar de nuevo.
+            </p>
+          </div>
+
+          <div id="spinningState" class="hidden">
+            <p class="muted small" style="margin:0;">Seleccionando una opción…</p>
+            <div class="spinnerline" aria-hidden="true"></div>
+          </div>
+
+          <div id="resultState" class="hidden">
+            <p class="result-name" id="resultName">—</p>
+            <p class="result-meta" id="resultMeta">—</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="spinBtn" type="button">Girar ruleta</button>
+
+          <a class="btn hidden" id="mapsBtn" target="_blank" rel="noopener noreferrer">Ir al restaurante</a>
+          <a class="btn hidden" id="deliveryBtn" target="_blank" rel="noopener noreferrer">Pedir delivery</a>
+
+          <button class="hidden" id="copyBtn" type="button">Copiar</button>
+          <button class="hidden" id="spinAgainBtn" type="button">Girar otra vez</button>
+        </div>
+
+        <form
+          name="early-access"
+          method="POST"
+          action="/"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          class="email-form hidden"
+          id="emailForm"
+        >
+          <input type="hidden" name="form-name" value="early-access" />
+          <p class="hidden">
+            <label>Si ves esto, no lo completes: <input name="bot-field" /></label>
+          </p>
+
+          <p class="small" style="margin: 0 0 8px;">
+            ¿Quieres acceso anticipado a la app y guardar tus preferencias?
+          </p>
+
+          <div class="email-row">
+            <input class="email-input" type="email" name="email" placeholder="tu@email.com" required />
+            <button type="submit" class="primary" id="emailSubmitBtn">Avisadme</button>
+          </div>
+
+          <p class="small muted" style="margin: 8px 0 0;">
+            No enviamos spam. Solo avisos de la beta.
+          </p>
+        </form>
+
+        <div class="thanks hidden" id="emailThanks">
+          <p style="margin:0; font-weight: 900;">Recibido.</p>
+          <p class="small muted" style="margin:6px 0 0;">
+            Te avisaremos cuando la beta esté lista.
+          </p>
+        </div>
+
+        <p class="muted small" id="hint" style="margin: 10px 0 0;">
+          Este MVP mide: giros, clics (Maps/delivery), copias, registros y carga de datos.
+        </p>
+      </div>
+
+      <aside class="card">
+        <h2>Notas del MVP</h2>
+        <p class="muted small" style="margin:0 0 10px;">
+          Madrid primero. Mostramos “Zona” en el resultado para orientar al usuario.
+        </p>
+        <ol class="list">
+          <li>La ruleta evita repetir opciones recientes.</li>
+          <li>Si existe link de ubicación/delivery, se abre directamente.</li>
+          <li>Si no existe, hacemos búsqueda automática.</li>
+        </ol>
+      </aside>
+    </section>
+
+    <p class="footer-note">
+      MVP estático, gratuito, listo para iterar rápido y medir lo que importa.
+    </p>
+  </main>
+
+  <script>
+    // Fallback local (si la función falla)
+    const FALLBACK_RESTAURANTS = [
+      { id: "r1", name: "La Mesa Invisible", cuisine: "Mediterránea", zone: "Madrid Centro", deliveryUrl: "", mapsUrl: "", image: "" },
+      { id: "r2", name: "Sushi Kintsugi", cuisine: "Japonesa", zone: "Salamanca", deliveryUrl: "", mapsUrl: "", image: "" },
+      { id: "r3", name: "Brasa Norte", cuisine: "Parrilla", zone: "Chamberí", deliveryUrl: "", mapsUrl: "", image: "" },
+      { id: "r4", name: "Pasta & Punto", cuisine: "Italiana", zone: "Retiro", deliveryUrl: "", mapsUrl: "", image: "" },
+      { id: "r5", name: "Taco Ritmo", cuisine: "Mexicana", zone: "Malasaña", deliveryUrl: "", mapsUrl: "", image: "" }
+    ];
+
+    // Fuente de datos activa (se reemplaza al cargar la Function)
+    let RESTAURANTS = [...FALLBACK_RESTAURANTS];
+
+    // Estado mínimo
+    const state = {
+      recentPickedIds: [],
+      isSpinning: false,
+      spinCount: 0
+    };
+
+    let lastRestaurant = null;
+
+    function mapsUrlFor(restaurant) {
+      if (restaurant.mapsUrl && String(restaurant.mapsUrl).trim().length > 0) return restaurant.mapsUrl;
+      const q = encodeURIComponent(`${restaurant.name} Madrid`);
+      return `https://www.google.com/maps/search/?api=1&query=${q}`;
+    }
+
+    function deliveryUrlFor(restaurant) {
+      if (restaurant.deliveryUrl && String(restaurant.deliveryUrl).trim().length > 0) return restaurant.deliveryUrl;
+      const q = encodeURIComponent(`${restaurant.cuisine} delivery Madrid`);
+      return `https://www.google.com/search?q=${q}`;
+    }
+
+    function pickRandomAvoidingRecent(list, recentIds, avoidCount = 3) {
+      if (!Array.isArray(list) || list.length === 0) return null;
+      if (list.length === 1) return list[0];
+
+      const avoidSet = new Set((recentIds || []).slice(-avoidCount));
+
+      let candidate = null;
+      let guard = 0;
+
+      do {
+        const idx = Math.floor(Math.random() * list.length);
+        candidate = list[idx];
+        guard += 1;
+      } while (candidate && avoidSet.has(candidate.id) && guard < 60);
+
+      return candidate;
+    }
+
+    // Carga desde Netlify Function (backend gratis)
+    async function loadRestaurantsFromFunction() {
+      try {
+        const res = await fetch("/.netlify/functions/restaurants", { cache: "no-store" });
+        if (!res.ok) throw new Error("No se pudo cargar la Function");
+
+        const data = await res.json();
+        const list = Array.isArray(data.restaurants) ? data.restaurants : [];
+
+        if (list.length === 0) throw new Error("Lista vacía");
+
+        RESTAURANTS = list;
+
+        countEl.textContent = String(RESTAURANTS.length);
+        statsLabelEl.textContent = "Restaurantes (Airtable)";
+        track("airtable_loaded", { count: RESTAURANTS.length });
+      } catch (e) {
+        RESTAURANTS = [...FALLBACK_RESTAURANTS];
+        countEl.textContent = String(RESTAURANTS.length);
+        statsLabelEl.textContent = "Restaurantes (fallback)";
+        track("airtable_failed");
+      }
+    }
+
+    // UI bindings
+    const countEl = document.getElementById("count");
+    const statsLabelEl = document.getElementById("statsLabel");
+
+    const rouletteCard = document.getElementById("rouletteCard");
+    const emptyState = document.getElementById("emptyState");
+    const spinningState = document.getElementById("spinningState");
+    const resultState = document.getElementById("resultState");
+
+    const resultName = document.getElementById("resultName");
+    const resultMeta = document.getElementById("resultMeta");
+
+    const spinBtn = document.getElementById("spinBtn");
+    const spinAgainBtn = document.getElementById("spinAgainBtn");
+    const mapsBtn = document.getElementById("mapsBtn");
+    const deliveryBtn = document.getElementById("deliveryBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    const emailForm = document.getElementById("emailForm");
+    const emailThanks = document.getElementById("emailThanks");
+    const emailSubmitBtn = document.getElementById("emailSubmitBtn");
+
+    function setView(view) {
+      emptyState.classList.toggle("hidden", view !== "empty");
+      spinningState.classList.toggle("hidden", view !== "spinning");
+      resultState.classList.toggle("hidden", view !== "result");
+      rouletteCard.classList.toggle("is-spinning", view === "spinning");
+    }
+
+    function setActionButtons(hasResult) {
+      mapsBtn.classList.toggle("hidden", !hasResult);
+      deliveryBtn.classList.toggle("hidden", !hasResult);
+      copyBtn.classList.toggle("hidden", !hasResult);
+      spinAgainBtn.classList.toggle("hidden", !hasResult);
+    }
+
+    function setSpinning(isSpinning) {
+      state.isSpinning = isSpinning;
+      spinBtn.disabled = isSpinning;
+      spinAgainBtn.disabled = isSpinning;
+      copyBtn.disabled = isSpinning;
+    }
+
+    function showResult(restaurant) {
+      lastRestaurant = restaurant;
+
+      track("result_shown", {
+        restaurant: restaurant.name,
+        cuisine: restaurant.cuisine,
+        zone: restaurant.zone
+      });
+
+      resultName.textContent = restaurant.name;
+      resultMeta.textContent = `${restaurant.cuisine} · ${restaurant.zone}`;
+
+      mapsBtn.href = mapsUrlFor(restaurant);
+      deliveryBtn.href = deliveryUrlFor(restaurant);
+
+      setActionButtons(true);
+      setView("result");
+
+      emailForm.classList.remove("hidden");
+      emailThanks.classList.add("hidden");
+    }
+
+    function spin() {
+      if (state.isSpinning) return;
+
+      track("spin");
+
+      setSpinning(true);
+      setActionButtons(false);
+      setView("spinning");
+
+      window.setTimeout(() => {
+        const picked = pickRandomAvoidingRecent(RESTAURANTS, state.recentPickedIds, 3);
+        if (!picked) {
+          setSpinning(false);
+          setView("empty");
+          return;
+        }
+
+        state.recentPickedIds.push(picked.id);
+        if (state.recentPickedIds.length > 10) state.recentPickedIds.shift();
+        state.spinCount += 1;
+
+        showResult(picked);
+        setSpinning(false);
+      }, 900);
+    }
+
+    async function copyCurrentResult() {
+      if (!lastRestaurant) return;
+
+      track("copy_click", {
+        restaurant: lastRestaurant.name,
+        cuisine: lastRestaurant.cuisine,
+        zone: lastRestaurant.zone
+      });
+
+      const text = `${lastRestaurant.name} (${lastRestaurant.cuisine}) - ${lastRestaurant.zone}`;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        const old = copyBtn.textContent;
+        copyBtn.textContent = "Copiado";
+        window.setTimeout(() => (copyBtn.textContent = old), 1200);
+      } catch (e) {
+        alert(text);
+      }
+    }
+
+    function encodeFormData(form) {
+      const data = new FormData(form);
+      const pairs = [];
+      for (const [key, value] of data.entries()) {
+        pairs.push(encodeURIComponent(key) + "=" + encodeURIComponent(String(value)));
+      }
+      return pairs.join("&");
+    }
+
+    // Init
+    countEl.textContent = String(RESTAURANTS.length);
+    statsLabelEl.textContent = "Restaurantes (cargando…)";
+    setView("empty");
+    setActionButtons(false);
+
+    // Cargar Airtable vía Function
+    loadRestaurantsFromFunction();
+
+    spinBtn.addEventListener("click", spin);
+    spinAgainBtn.addEventListener("click", spin);
+    copyBtn.addEventListener("click", copyCurrentResult);
+
+    mapsBtn.addEventListener("click", () => {
+      if (!lastRestaurant) return;
+      track("maps_click", {
+        restaurant: lastRestaurant.name,
+        cuisine: lastRestaurant.cuisine,
+        zone: lastRestaurant.zone
+      });
+    });
+
+    deliveryBtn.addEventListener("click", () => {
+      if (!lastRestaurant) return;
+      track("delivery_click", {
+        restaurant: lastRestaurant.name,
+        cuisine: lastRestaurant.cuisine,
+        zone: lastRestaurant.zone
+      });
+    });
+
+    // Email submit (Netlify)
+    emailForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      emailSubmitBtn.disabled = true;
+
+      try {
+        const body = encodeFormData(emailForm);
+
+        const res = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body
+        });
+
+        if (!res.ok) throw new Error("Form submit failed");
+
+        track("email_submitted");
+
+        emailForm.classList.add("hidden");
+        emailThanks.classList.remove("hidden");
+        emailForm.reset();
+      } catch (err) {
+        alert("No se pudo enviar el email. Prueba otra vez.");
+      } finally {
+        emailSubmitBtn.disabled = false;
+      }
+    });
+
+    window.__chefRoulette = { state, getRestaurants: () => RESTAURANTS, spin };
+  </script>
+</body>
+</html>
+
+
