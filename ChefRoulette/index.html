@@ -626,14 +626,15 @@
       </div>
 
       <form
-        name="early-access"
-        method="POST"
-        action="/"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        class="email-form hidden"
-        id="emailForm"
-      >
+  name="early-access"
+  method="POST"
+  action="/.netlify/forms/submit"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class="email-form hidden"
+  id="emailForm"
+>
+
         <input type="hidden" name="form-name" value="early-access" />
         <p class="hidden">
           <label>Si ves esto, no lo completes: <input name="bot-field" /></label>
@@ -673,14 +674,15 @@
       </p>
 
       <form
-        name="add-restaurant"
-        method="POST"
-        action="/"
-        data-netlify="true"
-        netlify-honeypot="bot-field-restaurant"
-        id="restaurantForm"
-        style="margin-top: 10px;"
-      >
+  name="add-restaurant"
+  method="POST"
+  action="/.netlify/forms/submit"
+  data-netlify="true"
+  netlify-honeypot="bot-field-restaurant"
+  id="restaurantForm"
+  style="margin-top: 10px;"
+>
+
         <input type="hidden" name="form-name" value="add-restaurant" />
         <p class="hidden">
           <label>Si ves esto, no lo completes: <input name="bot-field-restaurant" /></label>
@@ -1130,11 +1132,12 @@
       try {
         const body = encodeFormData(emailForm);
 
-        const res = await fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body
-        });
+        const res = await fetch("/.netlify/forms/submit", {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body
+});
+
 
         if (!res.ok) throw new Error("Form submit failed");
 
@@ -1160,11 +1163,12 @@
 
         track("restaurant_form_submit_attempt");
 
-        const res = await fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body
-        });
+       const res = await fetch("/.netlify/forms/submit", {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body
+});
+
 
         if (!res.ok) throw new Error("Restaurant form submit failed");
 
@@ -1210,4 +1214,5 @@
   </script>
 </body>
 </html>
+
 
