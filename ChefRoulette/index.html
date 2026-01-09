@@ -179,6 +179,28 @@
       box-shadow: 0 0 0 3px var(--focus);
     }
 
+    .subbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .subpill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid rgba(0,0,0,0.26);
+      border-radius: 999px;
+      background: rgba(0,0,0,0.10);
+      font-size: 12px;
+      color: rgba(255,255,255,0.92);
+      white-space: nowrap;
+    }
+
     button, a.btn {
       appearance: none;
       border: 1px solid var(--border-strong);
@@ -245,13 +267,11 @@
       transition: box-shadow 200ms ease, background 200ms ease;
     }
 
-    /* Micro-UX: sombreado y foco mientras gira */
     .is-spinning .stage {
       background: rgba(0,0,0,0.10);
       box-shadow: 0 18px 34px rgba(0,0,0,0.22);
     }
 
-    /* Overlay suave mientras gira */
     .spinOverlay {
       position: absolute;
       inset: 0;
@@ -263,7 +283,6 @@
 
     .is-spinning .spinOverlay { opacity: 1; }
 
-    /* Ruleta visual */
     .wheelWrap {
       display: grid;
       place-items: center;
@@ -364,7 +383,6 @@
       align-content: center;
     }
 
-    /* Resultado más protagonista */
     .result-name {
       font-size: clamp(24px, 4vw, 30px);
       font-weight: 900;
@@ -382,7 +400,6 @@
       opacity: 0.92;
     }
 
-    /* Animación de entrada tipo “premio” */
     .result-enter {
       animation: resultIn 520ms cubic-bezier(.2,.9,.2,1) both;
     }
@@ -436,6 +453,61 @@
       background: rgba(255,255,255,0.10);
     }
 
+    /* Form restaurante */
+    .rest-form {
+      padding: 18px;
+      border: 1px solid rgba(0,0,0,0.22);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,0.10);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.12);
+    }
+
+    .rest-form h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .grid1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.30);
+      font-size: 14px;
+      outline: none;
+      background: rgba(255,255,255,0.92);
+      color: rgba(0,0,0,0.90);
+      font-weight: 700;
+    }
+
+    .input:focus {
+      border-color: rgba(0,0,0,0.45);
+      box-shadow: 0 0 0 3px var(--focus);
+    }
+
+    .help {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: rgba(255,255,255,0.86);
+      line-height: 1.45;
+    }
+
     .footer-note {
       margin: 0;
       color: rgba(255,255,255,0.88);
@@ -450,13 +522,14 @@
       .resultBlock { min-height: 120px; }
     }
 
-    @media (max-width: 520px) {
-      .actions > * { flex: 1 1 auto; }
+    @media (max-width: 620px) {
       .filters { grid-template-columns: 1fr; }
+      .grid2 { grid-template-columns: 1fr; }
       .email-row { flex-direction: column; align-items: stretch; }
       .email-input { min-width: auto; width: 100%; }
       .wheelBox { width: 230px; height: 230px; }
       .wheel { width: 230px; height: 230px; }
+      .actions > * { flex: 1 1 auto; }
     }
   </style>
 </head>
@@ -497,6 +570,13 @@
         <div class="field">
           <div class="label">&nbsp;</div>
           <button class="ghost" id="clearFiltersBtn" type="button">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="subbar">
+        <div class="subpill">Opciones con estos filtros: <span id="poolCount">0</span></div>
+        <div class="small muted" id="filtersHint" style="margin:0;">
+          Consejo: usa Zona para decidir rápido
         </div>
       </div>
 
@@ -585,6 +665,84 @@
       </p>
     </section>
 
+    <!-- Formulario para restaurantes (Netlify Forms) -->
+    <section class="rest-form" id="restFormSection">
+      <h3>Añade tu restaurante</h3>
+      <p class="small muted" style="margin:0;">
+        Si quieres aparecer en Chef Roulette (gratis durante la beta), envíanos estos datos. Revisamos y lo añadimos.
+      </p>
+
+      <form
+        name="add-restaurant"
+        method="POST"
+        action="/"
+        data-netlify="true"
+        netlify-honeypot="bot-field-restaurant"
+        id="restaurantForm"
+        style="margin-top: 10px;"
+      >
+        <input type="hidden" name="form-name" value="add-restaurant" />
+        <p class="hidden">
+          <label>Si ves esto, no lo completes: <input name="bot-field-restaurant" /></label>
+        </p>
+
+        <div class="grid2">
+          <div class="field">
+            <div class="label">Nombre</div>
+            <input class="input" type="text" name="nombre" placeholder="Nombre del restaurante" required />
+          </div>
+          <div class="field">
+            <div class="label">Tipo</div>
+            <input class="input" type="text" name="tipo" placeholder="Italiana, Sushi, Mexicana…" required />
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <div class="label">Zona</div>
+            <input class="input" type="text" name="zona" placeholder="Chueca, Chamberí, Retiro…" required />
+          </div>
+          <div class="field">
+            <div class="label">Contacto</div>
+            <input class="input" type="text" name="contacto" placeholder="Email o teléfono" required />
+          </div>
+        </div>
+
+        <div class="grid1">
+          <div class="field">
+            <div class="label">Link ubicación (Google Maps)</div>
+            <input class="input" type="url" name="link_ubicacion" placeholder="https://maps.google.com/..." />
+          </div>
+          <div class="field">
+            <div class="label">Link delivery</div>
+            <input class="input" type="url" name="link_delivery" placeholder="Glovo / Uber Eats / Just Eat / web…" />
+          </div>
+          <div class="field">
+            <div class="label">Imagen (URL)</div>
+            <input class="input" type="url" name="imagen" placeholder="https://... (opcional)" />
+          </div>
+        </div>
+
+        <div class="subbar" style="margin-top: 12px;">
+          <button class="primary" type="submit" id="restaurantSubmitBtn">Enviar</button>
+          <div class="small muted" style="margin:0;">
+            Tardamos poco en revisarlo.
+          </div>
+        </div>
+
+        <p class="help">
+          Al enviar este formulario aceptas que revisemos los datos y los usemos únicamente para mostrar tu restaurante en la beta.
+        </p>
+      </form>
+
+      <div class="thanks hidden" id="restaurantThanks">
+        <p style="margin:0; font-weight: 900;">Recibido.</p>
+        <p class="small muted" style="margin:6px 0 0;">
+          Gracias. Lo revisamos y lo añadimos en cuanto esté listo.
+        </p>
+      </div>
+    </section>
+
     <p class="footer-note">Chef Roulette (Beta)</p>
   </main>
 
@@ -667,6 +825,12 @@
       });
     }
 
+    function updatePoolCount() {
+      const n = getFilteredRestaurants().length;
+      poolCountEl.textContent = String(n);
+      return n;
+    }
+
     async function loadRestaurantsFromFunction() {
       try {
         const res = await fetch("/.netlify/functions/restaurants", { cache: "no-store" });
@@ -680,11 +844,16 @@
         countEl.textContent = String(RESTAURANTS.length);
 
         buildFilterOptions();
+        updatePoolCount();
+
         track("airtable_loaded", { count: RESTAURANTS.length });
       } catch (e) {
         RESTAURANTS = [...FALLBACK_RESTAURANTS];
         countEl.textContent = String(RESTAURANTS.length);
+
         buildFilterOptions();
+        updatePoolCount();
+
         track("airtable_failed");
       }
     }
@@ -710,6 +879,8 @@
     const zoneSelect = document.getElementById("zoneSelect");
     const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 
+    const poolCountEl = document.getElementById("poolCount");
+
     const wheelEl = document.getElementById("wheel");
     let wheelRotation = 0;
 
@@ -717,10 +888,13 @@
     const emailThanks = document.getElementById("emailThanks");
     const emailSubmitBtn = document.getElementById("emailSubmitBtn");
 
-    // --- Micro-UX sonido (sin archivos externos) ---
-    // Importante: solo sonará tras interacción del usuario (click). Navegadores bloquean autoplay.
-    let audioCtx = null;
+    const restaurantForm = document.getElementById("restaurantForm");
+    const restaurantThanks = document.getElementById("restaurantThanks");
+    const restaurantSubmitBtn = document.getElementById("restaurantSubmitBtn");
+    const restFormSection = document.getElementById("restFormSection");
 
+    // Sonido simple sin archivos
+    let audioCtx = null;
     function getAudioCtx() {
       if (!audioCtx) {
         const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -729,42 +903,29 @@
       }
       return audioCtx;
     }
-
     function beep(freq = 900, duration = 0.03, type = "square", gainValue = 0.05) {
       const ctx = getAudioCtx();
       if (!ctx) return;
-
-      // Si el contexto está suspendido, intentamos reanudar (pasa en iOS/Chrome)
-      if (ctx.state === "suspended") {
-        ctx.resume().catch(() => {});
-      }
-
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
       osc.type = type;
       osc.frequency.value = freq;
       gain.gain.value = gainValue;
-
       osc.connect(gain);
       gain.connect(ctx.destination);
-
       const now = ctx.currentTime;
       osc.start(now);
       osc.stop(now + duration);
     }
-
     function spinTickPattern() {
-      // Pequeño “tick tick tick” al inicio del giro
       const ticks = 10;
       for (let i = 0; i < ticks; i++) {
-        const t = i * 60; // ms
+        const t = i * 60;
         window.setTimeout(() => {
-          // subimos un poco la frecuencia para simular aceleración
           beep(650 + i * 35, 0.02, "square", 0.045);
         }, t);
       }
-      // “clack” final suave
       window.setTimeout(() => {
         beep(240, 0.06, "sine", 0.06);
       }, 720);
@@ -795,7 +956,7 @@
     }
 
     function spinWheelVisual() {
-      const turns = 360 * (5 + Math.floor(Math.random() * 3)); // 5–7 vueltas
+      const turns = 360 * (5 + Math.floor(Math.random() * 3));
       const rand = Math.floor(Math.random() * 360);
       wheelRotation = wheelRotation + turns + rand;
       wheelEl.style.transform = `rotate(${wheelRotation}deg)`;
@@ -804,13 +965,8 @@
     function showResult(r) {
       lastRestaurant = r;
 
-      track("result_shown", {
-        restaurant: r.name,
-        cuisine: r.cuisine,
-        zone: r.zone
-      });
+      track("result_shown", { restaurant: r.name, cuisine: r.cuisine, zone: r.zone });
 
-      // Reset animación de premio
       resultState.classList.remove("result-enter");
 
       resultName.textContent = r.name;
@@ -822,7 +978,6 @@
       setActionButtons(true);
       setView("result");
 
-      // Forzar reflow para reiniciar animación
       void resultState.offsetWidth;
       resultState.classList.add("result-enter");
 
@@ -833,11 +988,9 @@
     function spin() {
       if (state.isSpinning) return;
 
-      // Habilita el contexto de audio tras interacción
       getAudioCtx();
 
       const filtered = getFilteredRestaurants();
-
       track("spin", {
         filter_cuisine: state.filters.cuisine || "all",
         filter_zone: state.filters.zone || "all",
@@ -848,7 +1001,6 @@
       setActionButtons(false);
       setView("spinning");
 
-      // Micro-UX: sonido + overlay + ruleta
       spinTickPattern();
       spinWheelVisual();
 
@@ -871,7 +1023,6 @@
           return;
         }
 
-        // restaurar copy por si veníamos de "no hay resultados"
         emptyState.innerHTML = `
           <p class="muted small" style="margin:0;">
             Elige filtros (si quieres) y pulsa “Girar ruleta”.
@@ -893,11 +1044,7 @@
     async function copyCurrentResult() {
       if (!lastRestaurant) return;
 
-      track("copy_click", {
-        restaurant: lastRestaurant.name,
-        cuisine: lastRestaurant.cuisine,
-        zone: lastRestaurant.zone
-      });
+      track("copy_click", { restaurant: lastRestaurant.name, cuisine: lastRestaurant.cuisine, zone: lastRestaurant.zone });
 
       const text = `${lastRestaurant.name} (${lastRestaurant.cuisine}) - ${lastRestaurant.zone}`;
 
@@ -935,6 +1082,8 @@
 
       state.filters.cuisine = typeSelect.value;
       state.filters.zone = zoneSelect.value;
+
+      updatePoolCount();
     }
 
     // Events
@@ -955,11 +1104,13 @@
     typeSelect.addEventListener("change", () => {
       state.filters.cuisine = typeSelect.value;
       track("filter_change", { filter: "cuisine", value: state.filters.cuisine || "all" });
+      updatePoolCount();
     });
 
     zoneSelect.addEventListener("change", () => {
       state.filters.zone = zoneSelect.value;
       track("filter_change", { filter: "zone", value: state.filters.zone || "all" });
+      updatePoolCount();
     });
 
     clearFiltersBtn.addEventListener("click", () => {
@@ -968,6 +1119,7 @@
       typeSelect.value = "";
       zoneSelect.value = "";
       track("filter_clear");
+      updatePoolCount();
     });
 
     // Email submit (Netlify forms)
@@ -998,8 +1150,51 @@
       }
     });
 
+    // Restaurante submit (Netlify forms)
+    restaurantForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      restaurantSubmitBtn.disabled = true;
+
+      try {
+        const body = encodeFormData(restaurantForm);
+
+        track("restaurant_form_submit_attempt");
+
+        const res = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body
+        });
+
+        if (!res.ok) throw new Error("Restaurant form submit failed");
+
+        track("restaurant_form_submitted");
+
+        restaurantForm.classList.add("hidden");
+        restaurantThanks.classList.remove("hidden");
+        restaurantForm.reset();
+      } catch (err) {
+        alert("No se pudo enviar el formulario. Prueba otra vez.");
+      } finally {
+        restaurantSubmitBtn.disabled = false;
+      }
+    });
+
+    // Track de visibilidad del formulario restaurante
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          track("restaurant_form_view");
+          observer.disconnect();
+        }
+      }
+    }, { threshold: 0.25 });
+
+    observer.observe(restFormSection);
+
     // Init
     countEl.textContent = String(RESTAURANTS.length);
+    updatePoolCount();
     setView("empty");
     setActionButtons(false);
     buildFilterOptions();
@@ -1009,8 +1204,10 @@
       state,
       getRestaurants: () => RESTAURANTS,
       getFilteredRestaurants,
+      updatePoolCount,
       spin
     };
   </script>
 </body>
 </html>
+
