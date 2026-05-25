@@ -144,15 +144,17 @@
     .muted { color: rgba(255,255,255,0.86); }
     .small { font-size: 13px; line-height: 1.5; }
 
-    /* Filtros */
-    .filters {
+    /* --- CHIPS MULTI-SELECT --- */
+    .filter-block {
+      margin-top: 12px;
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
       gap: 10px;
-      margin-top: 10px;
     }
 
-    .field { display: grid; gap: 6px; }
+    .filter-row {
+      display: grid;
+      gap: 6px;
+    }
 
     .label {
       font-size: 12px;
@@ -162,23 +164,49 @@
       color: rgba(255,255,255,0.92);
     }
 
-    select {
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.30);
-      background: rgba(255,255,255,0.92);
-      color: rgba(0,0,0,0.88);
+    .chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      appearance: none;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.28);
+      background: rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.92);
+      font-size: 13px;
       font-weight: 700;
-      font-size: 14px;
-      outline: none;
+      cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease, transform 80ms ease, box-shadow 120ms ease;
+      white-space: nowrap;
+      line-height: 1;
+      user-select: none;
     }
 
-    select:focus {
-      border-color: rgba(0,0,0,0.45);
-      box-shadow: 0 0 0 3px var(--focus);
+    .chip:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(0,0,0,0.40);
+      transform: translateY(-1px);
     }
 
+    .chip.active {
+      background: rgba(0,0,0,0.30);
+      border-color: rgba(0,0,0,0.55);
+      color: #fff;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.18);
+      transform: translateY(0);
+    }
+
+    .chip:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Subbar debajo de los chips */
     .subbar {
       display: flex;
       align-items: center;
@@ -239,6 +267,8 @@
     button.ghost {
       background: rgba(0,0,0,0.10);
       border-color: rgba(0,0,0,0.30);
+      font-size: 12px;
+      padding: 7px 12px;
     }
 
     button:disabled {
@@ -523,7 +553,6 @@
     }
 
     @media (max-width: 620px) {
-      .filters { grid-template-columns: 1fr; }
       .grid2 { grid-template-columns: 1fr; }
       .email-row { flex-direction: column; align-items: stretch; }
       .email-input { min-width: auto; width: 100%; }
@@ -552,32 +581,25 @@
     <section class="card roulette" id="rouletteCard">
       <h2>Ruleta</h2>
 
-      <div class="filters">
-        <div class="field">
-          <div class="label">Tipo</div>
-          <select id="typeSelect" aria-label="Filtrar por tipo">
-            <option value="">Todos</option>
-          </select>
+      <!-- FILTROS MULTI-CHIP -->
+      <div class="filter-block">
+        <div class="filter-row">
+          <div class="label">Tipo de cocina</div>
+          <div class="chips-wrap" id="typeChips">
+            <!-- Se genera dinámicamente -->
+          </div>
         </div>
-
-        <div class="field">
+        <div class="filter-row">
           <div class="label">Zona</div>
-          <select id="zoneSelect" aria-label="Filtrar por zona">
-            <option value="">Todas</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <div class="label">&nbsp;</div>
-          <button class="ghost" id="clearFiltersBtn" type="button">Limpiar</button>
+          <div class="chips-wrap" id="zoneChips">
+            <!-- Se genera dinámicamente -->
+          </div>
         </div>
       </div>
 
       <div class="subbar">
         <div class="subpill">Opciones con estos filtros: <span id="poolCount">0</span></div>
-        <div class="small muted" id="filtersHint" style="margin:0;">
-          Consejo: usa Zona para decidir rápido
-        </div>
+        <button class="ghost" id="clearFiltersBtn" type="button">Limpiar filtros</button>
       </div>
 
       <div class="stage" id="stage">
@@ -594,10 +616,10 @@
             <div class="resultBlock">
               <div id="emptyState">
                 <p class="muted small" style="margin:0;">
-                  Elige filtros (si quieres) y pulsa “Girar ruleta”.
+                  Elige filtros (si quieres) y pulsa "Girar ruleta".
                 </p>
                 <p class="muted small" style="margin:8px 0 0;">
-                  Si filtras demasiado y no hay opciones, te lo diremos.
+                  Puedes seleccionar varias zonas y tipos a la vez.
                 </p>
               </div>
 
@@ -626,15 +648,14 @@
       </div>
 
       <form
-  name="early-access"
-  method="POST"
-  action="/.netlify/forms/submit"
-  data-netlify="true"
-  netlify-honeypot="bot-field"
-  class="email-form hidden"
-  id="emailForm"
->
-
+        name="early-access"
+        method="POST"
+        action="/.netlify/forms/submit"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="email-form hidden"
+        id="emailForm"
+      >
         <input type="hidden" name="form-name" value="early-access" />
         <p class="hidden">
           <label>Si ves esto, no lo completes: <input name="bot-field" /></label>
@@ -662,7 +683,7 @@
       </div>
 
       <p class="muted small" id="hint" style="margin: 12px 0 0;">
-        Cambios en Airtable se reflejan automáticamente (puede tardar hasta 1 minuto).
+        Cambios en la hoja de datos se reflejan automáticamente (puede tardar hasta 1 minuto).
       </p>
     </section>
 
@@ -674,15 +695,14 @@
       </p>
 
       <form
-  name="add-restaurant"
-  method="POST"
-  action="/.netlify/forms/submit"
-  data-netlify="true"
-  netlify-honeypot="bot-field-restaurant"
-  id="restaurantForm"
-  style="margin-top: 10px;"
->
-
+        name="add-restaurant"
+        method="POST"
+        action="/.netlify/forms/submit"
+        data-netlify="true"
+        netlify-honeypot="bot-field-restaurant"
+        id="restaurantForm"
+        style="margin-top: 10px;"
+      >
         <input type="hidden" name="form-name" value="add-restaurant" />
         <p class="hidden">
           <label>Si ves esto, no lo completes: <input name="bot-field-restaurant" /></label>
@@ -760,11 +780,15 @@
 
     let RESTAURANTS = [...FALLBACK_RESTAURANTS];
 
+    // Estado: ahora los filtros son arrays (multi-select)
     const state = {
       recentPickedIds: [],
       isSpinning: false,
       spinCount: 0,
-      filters: { cuisine: "", zone: "" }
+      filters: {
+        cuisines: [],  // array — vacío = todos
+        zones: []      // array — vacío = todas
+      }
     };
 
     let lastRestaurant = null;
@@ -804,7 +828,7 @@
         const t = String(v || "").trim();
         if (t) s.add(t);
       }
-      return Array.from(s).sort((a,b) => a.localeCompare(b, "es"));
+      return Array.from(s).sort((a, b) => a.localeCompare(b, "es"));
     }
 
     function escapeHtml(str) {
@@ -816,13 +840,12 @@
         .replaceAll("'", "&#039;");
     }
 
+    // Filtrado multi-select
     function getFilteredRestaurants() {
-      const c = state.filters.cuisine;
-      const z = state.filters.zone;
-
+      const { cuisines, zones } = state.filters;
       return RESTAURANTS.filter(r => {
-        const okCuisine = !c || String(r.cuisine).trim() === c;
-        const okZone = !z || String(r.zone).trim() === z;
+        const okCuisine = cuisines.length === 0 || cuisines.includes(String(r.cuisine).trim());
+        const okZone    = zones.length === 0    || zones.includes(String(r.zone).trim());
         return okCuisine && okZone;
       });
     }
@@ -833,6 +856,88 @@
       return n;
     }
 
+    // ---- CHIPS ----
+    function buildChips(containerId, values, filterKey) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+
+      for (const val of values) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chip";
+        btn.textContent = val;
+        btn.dataset.value = val;
+
+        btn.addEventListener("click", () => {
+          if (state.isSpinning) return;
+
+          const arr = state.filters[filterKey];
+          const idx = arr.indexOf(val);
+
+          if (idx === -1) {
+            arr.push(val);
+            btn.classList.add("active");
+          } else {
+            arr.splice(idx, 1);
+            btn.classList.remove("active");
+          }
+
+          track("filter_change", {
+            filter: filterKey,
+            value: val,
+            selected: arr.includes(val),
+            total_selected: arr.length
+          });
+
+          updatePoolCount();
+        });
+
+        container.appendChild(btn);
+      }
+    }
+
+    function buildFilterChips() {
+      const cuisines = uniqSorted(RESTAURANTS.map(r => r.cuisine));
+      const zones    = uniqSorted(RESTAURANTS.map(r => r.zone));
+
+      // Mantener selección previa si sigue siendo válida
+      state.filters.cuisines = state.filters.cuisines.filter(c => cuisines.includes(c));
+      state.filters.zones    = state.filters.zones.filter(z => zones.includes(z));
+
+      buildChips("typeChips", cuisines, "cuisines");
+      buildChips("zoneChips", zones, "zones");
+
+      // Restaurar estado visual
+      restoreChipState("typeChips", state.filters.cuisines);
+      restoreChipState("zoneChips", state.filters.zones);
+
+      updatePoolCount();
+    }
+
+    function restoreChipState(containerId, activeValues) {
+      const container = document.getElementById(containerId);
+      container.querySelectorAll(".chip").forEach(btn => {
+        if (activeValues.includes(btn.dataset.value)) {
+          btn.classList.add("active");
+        }
+      });
+    }
+
+    function clearAllFilters() {
+      state.filters.cuisines = [];
+      state.filters.zones = [];
+
+      document.querySelectorAll(".chip.active").forEach(c => c.classList.remove("active"));
+
+      track("filter_clear");
+      updatePoolCount();
+    }
+
+    function setChipsDisabled(disabled) {
+      document.querySelectorAll(".chip").forEach(c => (c.disabled = disabled));
+    }
+
+    // ---- Carga de datos ----
     async function loadRestaurantsFromFunction() {
       try {
         const res = await fetch("/.netlify/functions/restaurants", { cache: "no-store" });
@@ -845,57 +950,52 @@
         RESTAURANTS = list;
         countEl.textContent = String(RESTAURANTS.length);
 
-        buildFilterOptions();
-        updatePoolCount();
+        buildFilterChips();
 
         track("airtable_loaded", { count: RESTAURANTS.length });
       } catch (e) {
         RESTAURANTS = [...FALLBACK_RESTAURANTS];
         countEl.textContent = String(RESTAURANTS.length);
 
-        buildFilterOptions();
-        updatePoolCount();
+        buildFilterChips();
 
         track("airtable_failed");
       }
     }
 
-    // UI bindings
-    const countEl = document.getElementById("count");
+    // ---- UI bindings ----
+    const countEl      = document.getElementById("count");
     const rouletteCard = document.getElementById("rouletteCard");
 
-    const emptyState = document.getElementById("emptyState");
+    const emptyState    = document.getElementById("emptyState");
     const spinningState = document.getElementById("spinningState");
-    const resultState = document.getElementById("resultState");
+    const resultState   = document.getElementById("resultState");
 
     const resultName = document.getElementById("resultName");
     const resultMeta = document.getElementById("resultMeta");
 
-    const spinBtn = document.getElementById("spinBtn");
+    const spinBtn      = document.getElementById("spinBtn");
     const spinAgainBtn = document.getElementById("spinAgainBtn");
-    const mapsBtn = document.getElementById("mapsBtn");
-    const deliveryBtn = document.getElementById("deliveryBtn");
-    const copyBtn = document.getElementById("copyBtn");
+    const mapsBtn      = document.getElementById("mapsBtn");
+    const deliveryBtn  = document.getElementById("deliveryBtn");
+    const copyBtn      = document.getElementById("copyBtn");
 
-    const typeSelect = document.getElementById("typeSelect");
-    const zoneSelect = document.getElementById("zoneSelect");
     const clearFiltersBtn = document.getElementById("clearFiltersBtn");
-
-    const poolCountEl = document.getElementById("poolCount");
+    const poolCountEl     = document.getElementById("poolCount");
 
     const wheelEl = document.getElementById("wheel");
     let wheelRotation = 0;
 
-    const emailForm = document.getElementById("emailForm");
-    const emailThanks = document.getElementById("emailThanks");
-    const emailSubmitBtn = document.getElementById("emailSubmitBtn");
+    const emailForm       = document.getElementById("emailForm");
+    const emailThanks     = document.getElementById("emailThanks");
+    const emailSubmitBtn  = document.getElementById("emailSubmitBtn");
 
-    const restaurantForm = document.getElementById("restaurantForm");
-    const restaurantThanks = document.getElementById("restaurantThanks");
-    const restaurantSubmitBtn = document.getElementById("restaurantSubmitBtn");
-    const restFormSection = document.getElementById("restFormSection");
+    const restaurantForm       = document.getElementById("restaurantForm");
+    const restaurantThanks     = document.getElementById("restaurantThanks");
+    const restaurantSubmitBtn  = document.getElementById("restaurantSubmitBtn");
+    const restFormSection      = document.getElementById("restFormSection");
 
-    // Sonido simple sin archivos
+    // ---- Audio ----
     let audioCtx = null;
     function getAudioCtx() {
       if (!audioCtx) {
@@ -909,7 +1009,7 @@
       const ctx = getAudioCtx();
       if (!ctx) return;
       if (ctx.state === "suspended") ctx.resume().catch(() => {});
-      const osc = ctx.createOscillator();
+      const osc  = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = type;
       osc.frequency.value = freq;
@@ -923,43 +1023,38 @@
     function spinTickPattern() {
       const ticks = 10;
       for (let i = 0; i < ticks; i++) {
-        const t = i * 60;
-        window.setTimeout(() => {
-          beep(650 + i * 35, 0.02, "square", 0.045);
-        }, t);
+        window.setTimeout(() => { beep(650 + i * 35, 0.02, "square", 0.045); }, i * 60);
       }
-      window.setTimeout(() => {
-        beep(240, 0.06, "sine", 0.06);
-      }, 720);
+      window.setTimeout(() => { beep(240, 0.06, "sine", 0.06); }, 720);
     }
 
+    // ---- Vistas ----
     function setView(view) {
-      emptyState.classList.toggle("hidden", view !== "empty");
+      emptyState.classList.toggle("hidden",    view !== "empty");
       spinningState.classList.toggle("hidden", view !== "spinning");
-      resultState.classList.toggle("hidden", view !== "result");
+      resultState.classList.toggle("hidden",   view !== "result");
       rouletteCard.classList.toggle("is-spinning", view === "spinning");
     }
 
     function setActionButtons(hasResult) {
-      mapsBtn.classList.toggle("hidden", !hasResult);
-      deliveryBtn.classList.toggle("hidden", !hasResult);
-      copyBtn.classList.toggle("hidden", !hasResult);
+      mapsBtn.classList.toggle("hidden",      !hasResult);
+      deliveryBtn.classList.toggle("hidden",  !hasResult);
+      copyBtn.classList.toggle("hidden",      !hasResult);
       spinAgainBtn.classList.toggle("hidden", !hasResult);
     }
 
     function setSpinning(isSpinning) {
       state.isSpinning = isSpinning;
-      spinBtn.disabled = isSpinning;
+      spinBtn.disabled      = isSpinning;
       spinAgainBtn.disabled = isSpinning;
-      copyBtn.disabled = isSpinning;
-      typeSelect.disabled = isSpinning;
-      zoneSelect.disabled = isSpinning;
+      copyBtn.disabled      = isSpinning;
       clearFiltersBtn.disabled = isSpinning;
+      setChipsDisabled(isSpinning);
     }
 
     function spinWheelVisual() {
       const turns = 360 * (5 + Math.floor(Math.random() * 3));
-      const rand = Math.floor(Math.random() * 360);
+      const rand  = Math.floor(Math.random() * 360);
       wheelRotation = wheelRotation + turns + rand;
       wheelEl.style.transform = `rotate(${wheelRotation}deg)`;
     }
@@ -967,14 +1062,18 @@
     function showResult(r) {
       lastRestaurant = r;
 
-      track("result_shown", { restaurant: r.name, cuisine: r.cuisine, zone: r.zone });
+      track("result_shown", {
+        restaurant: r.name,
+        cuisine: r.cuisine,
+        zone: r.zone,
+        filter_cuisines: state.filters.cuisines.join(",") || "all",
+        filter_zones:    state.filters.zones.join(",")    || "all"
+      });
 
       resultState.classList.remove("result-enter");
-
       resultName.textContent = r.name;
       resultMeta.textContent = `${r.cuisine} · ${r.zone}`;
-
-      mapsBtn.href = mapsUrlFor(r);
+      mapsBtn.href     = mapsUrlFor(r);
       deliveryBtn.href = deliveryUrlFor(r);
 
       setActionButtons(true);
@@ -994,8 +1093,8 @@
 
       const filtered = getFilteredRestaurants();
       track("spin", {
-        filter_cuisine: state.filters.cuisine || "all",
-        filter_zone: state.filters.zone || "all",
+        filter_cuisines: state.filters.cuisines.join(",") || "all",
+        filter_zones:    state.filters.zones.join(",")    || "all",
         pool_size: filtered.length
       });
 
@@ -1015,23 +1114,15 @@
           setActionButtons(false);
           setView("empty");
           emptyState.innerHTML = `
-            <p class="muted small" style="margin:0;">
-              No hay restaurantes con esos filtros.
-            </p>
-            <p class="muted small" style="margin:8px 0 0;">
-              Prueba a cambiar Tipo/Zona o pulsa “Limpiar”.
-            </p>
+            <p class="muted small" style="margin:0;">No hay restaurantes con esos filtros.</p>
+            <p class="muted small" style="margin:8px 0 0;">Prueba a cambiar la selección o pulsa "Limpiar filtros".</p>
           `;
           return;
         }
 
         emptyState.innerHTML = `
-          <p class="muted small" style="margin:0;">
-            Elige filtros (si quieres) y pulsa “Girar ruleta”.
-          </p>
-          <p class="muted small" style="margin:8px 0 0;">
-            Si filtras demasiado y no hay opciones, te lo diremos.
-          </p>
+          <p class="muted small" style="margin:0;">Elige filtros (si quieres) y pulsa "Girar ruleta".</p>
+          <p class="muted small" style="margin:8px 0 0;">Puedes seleccionar varias zonas y tipos a la vez.</p>
         `;
 
         state.recentPickedIds.push(picked.id);
@@ -1045,11 +1136,8 @@
 
     async function copyCurrentResult() {
       if (!lastRestaurant) return;
-
       track("copy_click", { restaurant: lastRestaurant.name, cuisine: lastRestaurant.cuisine, zone: lastRestaurant.zone });
-
       const text = `${lastRestaurant.name} (${lastRestaurant.cuisine}) - ${lastRestaurant.zone}`;
-
       try {
         await navigator.clipboard.writeText(text);
         const old = copyBtn.textContent;
@@ -1061,7 +1149,7 @@
     }
 
     function encodeFormData(form) {
-      const data = new FormData(form);
+      const data  = new FormData(form);
       const pairs = [];
       for (const [key, value] of data.entries()) {
         pairs.push(encodeURIComponent(key) + "=" + encodeURIComponent(String(value)));
@@ -1069,80 +1157,35 @@
       return pairs.join("&");
     }
 
-    function buildFilterOptions() {
-      const cuisines = uniqSorted(RESTAURANTS.map(r => r.cuisine));
-      const zones = uniqSorted(RESTAURANTS.map(r => r.zone));
-
-      const currentCuisine = state.filters.cuisine;
-      const currentZone = state.filters.zone;
-
-      typeSelect.innerHTML = `<option value="">Todos</option>` + cuisines.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-      zoneSelect.innerHTML = `<option value="">Todas</option>` + zones.map(z => `<option value="${escapeHtml(z)}">${escapeHtml(z)}</option>`).join("");
-
-      typeSelect.value = cuisines.includes(currentCuisine) ? currentCuisine : "";
-      zoneSelect.value = zones.includes(currentZone) ? currentZone : "";
-
-      state.filters.cuisine = typeSelect.value;
-      state.filters.zone = zoneSelect.value;
-
-      updatePoolCount();
-    }
-
-    // Events
+    // ---- Eventos ----
     spinBtn.addEventListener("click", spin);
     spinAgainBtn.addEventListener("click", spin);
     copyBtn.addEventListener("click", copyCurrentResult);
 
     mapsBtn.addEventListener("click", () => {
       if (!lastRestaurant) return;
-      track("maps_click", { restaurant: lastRestaurant.name, cuisine: lastRestaurant.cuisine, zone: lastRestaurant.zone });
+      track("maps_click", { restaurant: lastRestaurant.name });
     });
 
     deliveryBtn.addEventListener("click", () => {
       if (!lastRestaurant) return;
-      track("delivery_click", { restaurant: lastRestaurant.name, cuisine: lastRestaurant.cuisine, zone: lastRestaurant.zone });
+      track("delivery_click", { restaurant: lastRestaurant.name });
     });
 
-    typeSelect.addEventListener("change", () => {
-      state.filters.cuisine = typeSelect.value;
-      track("filter_change", { filter: "cuisine", value: state.filters.cuisine || "all" });
-      updatePoolCount();
-    });
+    clearFiltersBtn.addEventListener("click", clearAllFilters);
 
-    zoneSelect.addEventListener("change", () => {
-      state.filters.zone = zoneSelect.value;
-      track("filter_change", { filter: "zone", value: state.filters.zone || "all" });
-      updatePoolCount();
-    });
-
-    clearFiltersBtn.addEventListener("click", () => {
-      state.filters.cuisine = "";
-      state.filters.zone = "";
-      typeSelect.value = "";
-      zoneSelect.value = "";
-      track("filter_clear");
-      updatePoolCount();
-    });
-
-    // Email submit (Netlify forms)
+    // Email submit
     emailForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       emailSubmitBtn.disabled = true;
-
       try {
-        const body = encodeFormData(emailForm);
-
         const res = await fetch("/.netlify/forms/submit", {
-  method: "POST",
-  headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  body
-});
-
-
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: encodeFormData(emailForm)
+        });
         if (!res.ok) throw new Error("Form submit failed");
-
         track("email_submitted");
-
         emailForm.classList.add("hidden");
         emailThanks.classList.remove("hidden");
         emailForm.reset();
@@ -1153,27 +1196,19 @@
       }
     });
 
-    // Restaurante submit (Netlify forms)
+    // Restaurante submit
     restaurantForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       restaurantSubmitBtn.disabled = true;
-
       try {
-        const body = encodeFormData(restaurantForm);
-
         track("restaurant_form_submit_attempt");
-
-       const res = await fetch("/.netlify/forms/submit", {
-  method: "POST",
-  headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  body
-});
-
-
+        const res = await fetch("/.netlify/forms/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: encodeFormData(restaurantForm)
+        });
         if (!res.ok) throw new Error("Restaurant form submit failed");
-
         track("restaurant_form_submitted");
-
         restaurantForm.classList.add("hidden");
         restaurantThanks.classList.remove("hidden");
         restaurantForm.reset();
@@ -1184,7 +1219,7 @@
       }
     });
 
-    // Track de visibilidad del formulario restaurante
+    // Visibility tracking del form de restaurante
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
@@ -1193,15 +1228,14 @@
         }
       }
     }, { threshold: 0.25 });
-
     observer.observe(restFormSection);
 
-    // Init
+    // ---- Init ----
     countEl.textContent = String(RESTAURANTS.length);
+    buildFilterChips();
     updatePoolCount();
     setView("empty");
     setActionButtons(false);
-    buildFilterOptions();
     loadRestaurantsFromFunction();
 
     window.__chefRoulette = {
@@ -1214,5 +1248,3 @@
   </script>
 </body>
 </html>
-
-
