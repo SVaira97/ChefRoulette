@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chef Roulette — Beta</title>
 
+  <!-- Open Graph / social share -->
+  <meta property="og:title" content="Chef Roulette — ¿No sabes dónde comer? Gira la ruleta." />
+  <meta property="og:description" content="Elige tipo de cocina y zona, gira la ruleta, y deja que decida por ti. Más de 900 restaurantes reales en Madrid." />
+  <meta property="og:image" content="https://chefroulette.netlify.app/og-image.jpg" />
+  <meta property="og:url" content="https://chefroulette.netlify.app/" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Chef Roulette — ¿No sabes dónde comer? Gira la ruleta." />
+  <meta name="twitter:description" content="Elige tipo de cocina y zona, gira la ruleta, y deja que decida por ti." />
+  <meta name="twitter:image" content="https://chefroulette.netlify.app/og-image.jpg" />
+
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG1PK6CJ88"></script>
   <script>
@@ -641,7 +653,7 @@
             <a class="btn hidden" id="mapsBtn" target="_blank" rel="noopener noreferrer">Ir al restaurante</a>
             <a class="btn hidden" id="deliveryBtn" target="_blank" rel="noopener noreferrer">Pedir delivery</a>
 
-            <button class="hidden" id="copyBtn" type="button">Copiar</button>
+            <button class="hidden" id="sendBtn" type="button">Enviar</button>
             <button class="hidden" id="spinAgainBtn" type="button">Girar otra vez</button>
           </div>
         </div>
@@ -978,7 +990,7 @@
     const spinAgainBtn = document.getElementById("spinAgainBtn");
     const mapsBtn      = document.getElementById("mapsBtn");
     const deliveryBtn  = document.getElementById("deliveryBtn");
-    const copyBtn      = document.getElementById("copyBtn");
+    const sendBtn      = document.getElementById("sendBtn");
 
     const clearFiltersBtn = document.getElementById("clearFiltersBtn");
     const poolCountEl     = document.getElementById("poolCount");
@@ -1039,7 +1051,7 @@
     function setActionButtons(hasResult) {
       mapsBtn.classList.toggle("hidden",      !hasResult);
       deliveryBtn.classList.toggle("hidden",  !hasResult);
-      copyBtn.classList.toggle("hidden",      !hasResult);
+      sendBtn.classList.toggle("hidden",      !hasResult);
       spinAgainBtn.classList.toggle("hidden", !hasResult);
     }
 
@@ -1047,7 +1059,7 @@
       state.isSpinning = isSpinning;
       spinBtn.disabled      = isSpinning;
       spinAgainBtn.disabled = isSpinning;
-      copyBtn.disabled      = isSpinning;
+      sendBtn.disabled      = isSpinning;
       clearFiltersBtn.disabled = isSpinning;
       setChipsDisabled(isSpinning);
     }
@@ -1134,18 +1146,23 @@
       }, 900);
     }
 
-    async function copyCurrentResult() {
+    // Envío del resultado por WhatsApp
+    function sendResultViaWhatsApp() {
       if (!lastRestaurant) return;
-      track("copy_click", { restaurant: lastRestaurant.name, cuisine: lastRestaurant.cuisine, zone: lastRestaurant.zone });
-      const text = `${lastRestaurant.name} (${lastRestaurant.cuisine}) - ${lastRestaurant.zone}`;
-      try {
-        await navigator.clipboard.writeText(text);
-        const old = copyBtn.textContent;
-        copyBtn.textContent = "Copiado";
-        window.setTimeout(() => (copyBtn.textContent = old), 1200);
-      } catch (e) {
-        alert(text);
-      }
+
+      track("send_click", {
+        restaurant: lastRestaurant.name,
+        cuisine: lastRestaurant.cuisine,
+        zone: lastRestaurant.zone
+      });
+
+      const text =
+        `🎰 La ruleta de Chef Roulette eligió: *${lastRestaurant.name}*\n` +
+        `${lastRestaurant.cuisine} · ${lastRestaurant.zone}\n\n` +
+        `Pruébala tú también: https://chefroulette.netlify.app/`;
+
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     }
 
     function encodeFormData(form) {
@@ -1160,7 +1177,7 @@
     // ---- Eventos ----
     spinBtn.addEventListener("click", spin);
     spinAgainBtn.addEventListener("click", spin);
-    copyBtn.addEventListener("click", copyCurrentResult);
+    sendBtn.addEventListener("click", sendResultViaWhatsApp);
 
     mapsBtn.addEventListener("click", () => {
       if (!lastRestaurant) return;
