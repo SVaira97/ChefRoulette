@@ -23,8 +23,8 @@ exports.handler = async () => {
     }
 
     const url = `https://opensheet.elk.sh/${sheetId}/${encodeURIComponent(sheetName)}`;
-
     const res = await fetch(url);
+
     if (!res.ok) {
       return {
         statusCode: 502,
@@ -50,7 +50,7 @@ exports.handler = async () => {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=60"
+        "Cache-Control": "public, max-age=1800, stale-while-revalidate=3600"
       },
       body: JSON.stringify({
         source: "gsheets",
@@ -68,8 +68,3 @@ exports.handler = async () => {
     };
   }
 };
-
-
-
-
-
