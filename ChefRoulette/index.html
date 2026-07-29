@@ -8,20 +8,18 @@
   <!-- Open Graph / social share -->
   <meta property="og:title" content="Chef Roulette — ¿No sabes dónde comer? Gira la ruleta." />
   <meta property="og:description" content="Elige tipo de cocina y zona, gira la ruleta, y deja que decida por ti. Más de 900 restaurantes reales en Madrid." />
-  <meta property="og:image" content="https://chefroulette.netlify.app/og-image.jpg" />
-  <meta property="og:url" content="https://chefroulette.netlify.app/" />
+  <meta property="og:image" content="https://chefroulette.app/og-image.jpg" />
+  <meta property="og:url" content="https://chefroulette.app/" />
   <meta property="og:type" content="website" />
-
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Chef Roulette — ¿No sabes dónde comer? Gira la ruleta." />
   <meta name="twitter:description" content="Elige tipo de cocina y zona, gira la ruleta, y deja que decida por ti." />
-  <meta name="twitter:image" content="https://chefroulette.netlify.app/og-image.jpg" />
-
+  <meta name="twitter:image" content="https://chefroulette.app/og-image.jpg" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
-  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG1PK6CJ88"></script>
   <script>
@@ -29,1230 +27,1043 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-FG1PK6CJ88');
-
     function track(eventName, params = {}) {
       if (typeof gtag === "function") gtag("event", eventName, params);
     }
   </script>
 
   <style>
-    :root {
-      --bg: #F67919;
-      --accent: #AF4D03;
-      --accent2: #FF9A4C;
-      --text: #FFFFFF;
-      --ink: #000000;
 
-      --card: rgba(255,255,255,0.12);
-      --border: rgba(0,0,0,0.22);
-      --border-strong: rgba(0,0,0,0.32);
-      --shadow: 0 14px 40px rgba(0,0,0,0.25);
-      --radius: 18px;
-      --focus: rgba(255,154,76,0.25);
+  /* ── RESET & BASE ── */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-      --dim: rgba(0,0,0,0.22);
-      --dim-strong: rgba(0,0,0,0.30);
-    }
+  :root {
+    --or: #F67919;
+    --ord: #AF4D03;
+    --orl: #FF9A4C;
+    --orll: #FFF3E8;
+    --bk: #111111;
+    --gy: #6B6B6B;
+    --gyl: #F2F2F2;
+    --wh: #FFFFFF;
+    --cr: #FFF8F0;
+    --shadow-card: 0 14px 40px rgba(0,0,0,0.18);
+    --radius: 24px;
+    --focus: rgba(255,154,76,0.30);
+  }
 
-    * { box-sizing: border-box; }
+  * { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background:
-        radial-gradient(900px 540px at 10% 15%, rgba(255,154,76,0.55), transparent 60%),
-        radial-gradient(900px 540px at 90% 30%, rgba(175,77,3,0.45), transparent 60%),
-        var(--bg);
-    }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--wh);
+    min-height: 100vh;
+    background: var(--or);
+    overflow-x: hidden;
+  }
 
-    .container {
-      width: 100%;
-      max-width: 920px;
-      display: grid;
-      gap: 16px;
-    }
+  /* ── CONFETTI ── */
+  #confetti-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 9999;
+  }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      padding: 18px 18px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
+  /* ── PHONE SHELL (mobile centering on desktop) ── */
+  .app-shell {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--or);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px 4px;
+    font-size: 12px; font-weight: 700; color: white;
+    position: sticky; top: 0; z-index: 100;
+    background: var(--or);
+  }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
 
-    .logo {
-      margin: 0;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      font-size: clamp(26px, 4vw, 40px);
-      line-height: 1.05;
-      text-transform: uppercase;
-    }
+  /* ── HEADER ── */
+  .app-header {
+    padding: 6px 20px 18px;
+    background: var(--or);
+  }
+  .header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .logo {
+    font-size: 22px; font-weight: 900;
+    color: white; letter-spacing: -0.03em; line-height: 1.05;
+    text-transform: uppercase; margin: 0;
+  }
+  .cnt-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(0,0,0,0.18); color: white;
+    font-size: 11px; font-weight: 600;
+    padding: 5px 10px; border-radius: 999px;
+  }
+  .beta-badge {
+    display: inline-flex; align-items: center;
+    background: rgba(0,0,0,0.18); color: white;
+    font-size: 10px; font-weight: 800;
+    padding: 4px 8px; border-radius: 999px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero-q { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.88); margin-bottom: 3px; }
+  .hero-h {
+    font-size: 26px; font-weight: 900; color: white;
+    line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 8px;
+  }
+  .hero-s { font-size: 12px; color: rgba(255,255,255,0.78); font-weight: 500; margin-bottom: 18px; line-height: 1.4; }
 
-    .beta {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.30);
-      background: rgba(0,0,0,0.12);
-      font-weight: 900;
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
+  /* ── SPIN BUTTON ── */
+  .btn-spin-main {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 15px; border-radius: 999px;
+    background: var(--bk); color: white;
+    font-size: 15px; font-weight: 800; letter-spacing: 0.02em;
+    border: none; cursor: pointer; margin-bottom: 18px;
+    font-family: inherit;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .btn-spin-main:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+  .btn-spin-main:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-spin-ic {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--or); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.10);
-      font-size: 12px;
-      color: rgba(255,255,255,0.92);
-      white-space: nowrap;
-    }
+  /* ── MINI STEPS ── */
+  .mini-steps { display: flex; justify-content: space-around; padding-bottom: 20px; }
+  .ms { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  .ms-ic {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(0,0,0,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ms-t { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.82); text-align: center; line-height: 1.3; }
 
-    .tagline {
-      margin: 6px 0 0;
-      width: 100%;
-      line-height: 1.45;
-      font-size: 14px;
-      color: rgba(255,255,255,0.92);
-    }
+  /* ── CREAM SECTION (filtros + ruleta + resultado) ── */
+  .cream-section {
+    background: var(--cr);
+    border-radius: 28px 28px 0 0;
+    padding: 22px 20px 32px;
+    flex: 1;
+  }
 
-    .card {
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
+  /* ── FILTER SHEET ── */
+  .filter-sheet { margin-bottom: 18px; }
+  .sheet-handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: rgba(0,0,0,0.12); margin: 0 auto 16px;
+  }
+  .filter-title {
+    font-size: 15px; font-weight: 800; color: var(--bk);
+    margin-bottom: 16px; letter-spacing: -0.01em;
+  }
+  .filter-sec-t {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--gy); margin-bottom: 8px;
+  }
+  .chips-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
 
-    .card h2 {
-      margin: 0 0 10px;
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
+  .chip {
+    appearance: none;
+    padding: 7px 13px; border-radius: 999px;
+    border: 1.5px solid #E0E0E0;
+    background: white; color: var(--bk);
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap; line-height: 1; user-select: none;
+  }
+  .chip:hover { border-color: var(--or); }
+  .chip.active { background: var(--or); border-color: var(--or); color: white; }
+  .chip:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .muted { color: rgba(255,255,255,0.86); }
-    .small { font-size: 13px; line-height: 1.5; }
+  /* pool count + clear */
+  .filter-subbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .pool-pill {
+    font-size: 12px; color: var(--gy); font-weight: 500;
+  }
+  .pool-pill span { color: var(--or); font-weight: 800; }
+  .btn-clear {
+    font-size: 11px; font-weight: 700; color: var(--gy);
+    background: none; border: 1px solid #DDD; border-radius: 999px;
+    padding: 5px 10px; cursor: pointer; font-family: inherit;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-clear:hover { border-color: var(--or); color: var(--ord); }
 
-    /* --- CHIPS MULTI-SELECT --- */
-    .filter-block {
-      margin-top: 12px;
-      display: grid;
-      gap: 10px;
-    }
+  /* ── GIRAR BUTTON (inside sheet) ── */
+  .btn-girar {
+    width: 100%; padding: 14px; border-radius: 999px;
+    background: var(--or); color: white;
+    font-size: 15px; font-weight: 800; letter-spacing: 0.03em;
+    border: none; cursor: pointer; font-family: inherit;
+    margin-bottom: 20px;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .btn-girar:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(246,121,25,0.35); }
+  .btn-girar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    .filter-row {
-      display: grid;
-      gap: 6px;
-    }
+  /* ── WHEEL AREA ── */
+  .wheel-area {
+    display: flex; justify-content: center;
+    position: relative; margin-bottom: 20px;
+  }
+  .wheel-wrap-inner { position: relative; }
+  .canvas-pointer {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 11px solid transparent; border-right: 11px solid transparent;
+    border-bottom: 22px solid #111;
+    z-index: 10; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+  }
+  #wheelCanvas {
+    display: block; border-radius: 50%;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.15);
+  }
 
-    .label {
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.92);
-    }
+  /* ── RESULT BLOCK ── */
+  .result-block {
+    background: white; border-radius: 20px;
+    padding: 16px; margin-bottom: 16px;
+    border: 1px solid rgba(0,0,0,0.06);
+    min-height: 100px; display: grid; align-content: center;
+  }
+  .result-empty { text-align: center; }
+  .result-empty p { font-size: 13px; color: var(--gy); margin: 0; line-height: 1.5; }
+  .result-spinning p { font-size: 13px; color: var(--gy); margin: 0; }
 
-    .chips-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+  /* WINNER header inside result */
+  .winner-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .winner-wheel-frame {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 3px solid var(--or);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    overflow: hidden; flex-shrink: 0; position: relative;
+  }
+  #resultWheelCanvas { display: block; }
+  .winner-crown {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    font-size: 16px; z-index: 10;
+  }
+  .winner-frame-wrap { position: relative; flex-shrink: 0; }
 
-    .chip {
-      appearance: none;
-      padding: 7px 13px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.28);
-      background: rgba(255,255,255,0.10);
-      color: rgba(255,255,255,0.92);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 120ms ease, border-color 120ms ease, transform 80ms ease, box-shadow 120ms ease;
-      white-space: nowrap;
-      line-height: 1;
-      user-select: none;
-    }
+  .winner-badge-inline {
+    background: linear-gradient(135deg, var(--or), var(--ord));
+    color: white; font-size: 10px; font-weight: 800;
+    padding: 4px 10px; border-radius: 999px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    display: inline-block; margin-bottom: 4px;
+  }
+  .result-name {
+    font-size: 20px; font-weight: 900; color: var(--bk);
+    letter-spacing: -0.02em; margin: 0 0 3px;
+  }
+  .result-meta { font-size: 12px; font-weight: 600; color: var(--gy); margin: 0; }
 
-    .chip:hover {
-      background: rgba(255,255,255,0.18);
-      border-color: rgba(0,0,0,0.40);
-      transform: translateY(-1px);
-    }
+  .result-enter { animation: resultIn 480ms cubic-bezier(.2,.9,.2,1) both; }
+  @keyframes resultIn {
+    0%   { opacity: 0; transform: translateY(10px) scale(0.97); }
+    70%  { opacity: 1; transform: translateY(-2px) scale(1.01); }
+    100% { opacity: 1; transform: none; }
+  }
 
-    .chip.active {
-      background: rgba(0,0,0,0.30);
-      border-color: rgba(0,0,0,0.55);
-      color: #fff;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.18);
-      transform: translateY(0);
-    }
+  /* ── ACTION BUTTONS ── */
+  .actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .act-btn {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; padding: 13px 18px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: none; font-family: inherit; letter-spacing: 0.01em;
+    transition: transform 100ms ease, box-shadow 100ms ease;
+  }
+  .act-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .act-btn.pr { background: var(--bk); color: white; }
+  .act-btn.sc { background: white; color: var(--bk); border: 1.5px solid #E8E8E8; }
+  .act-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .act-ic { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-    .chip:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
-    }
+  .hidden { display: none !important; }
 
-    /* Subbar debajo de los chips */
-    .subbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
+  /* ── EMAIL FORM ── */
+  .email-box {
+    background: white; border-radius: 16px; padding: 14px;
+    margin-bottom: 14px; border: 1px solid rgba(0,0,0,0.06);
+  }
+  .email-box p { font-size: 12px; color: var(--bk); margin: 0 0 9px; font-weight: 600; line-height: 1.4; }
+  .email-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .email-input {
+    flex: 1; padding: 10px 12px; border-radius: 10px;
+    border: 1.5px solid #E8E8E8; font-size: 13px; outline: none;
+    min-width: 160px; font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .email-input:focus { border-color: var(--or); box-shadow: 0 0 0 3px var(--focus); }
+  .btn-avis {
+    padding: 10px 16px; border-radius: 999px;
+    background: var(--or); color: white;
+    font-size: 12px; font-weight: 800; border: none;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .email-note { font-size: 10px; color: var(--gy); margin: 6px 0 0; }
 
-    .subpill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
-      border: 1px solid rgba(0,0,0,0.26);
-      border-radius: 999px;
-      background: rgba(0,0,0,0.10);
-      font-size: 12px;
-      color: rgba(255,255,255,0.92);
-      white-space: nowrap;
-    }
+  .thanks {
+    background: white; border-radius: 16px; padding: 14px;
+    border: 1px solid rgba(0,0,0,0.06); margin-bottom: 14px;
+  }
+  .thanks p { margin: 0; font-size: 13px; color: var(--bk); }
 
-    button, a.btn {
-      appearance: none;
-      border: 1px solid var(--border-strong);
-      background: rgba(255,255,255,0.10);
-      color: var(--text);
-      padding: 11px 14px;
-      border-radius: 14px;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: 900;
-      font-size: 14px;
-      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: center;
-      white-space: nowrap;
-    }
+  /* ── ADD RESTAURANT ── */
+  .add-restaurant-section {
+    background: white; border-radius: 20px; padding: 18px;
+    margin-bottom: 14px; border: 1px solid rgba(0,0,0,0.06);
+  }
+  .add-restaurant-section h3 {
+    font-size: 14px; font-weight: 800; color: var(--bk);
+    margin: 0 0 6px; letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .add-restaurant-section p { font-size: 12px; color: var(--gy); margin: 0 0 12px; line-height: 1.4; }
 
-    button:hover, a.btn:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.14);
-      border-color: rgba(0,0,0,0.45);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
-    }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .grid1 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+  .field { display: grid; gap: 5px; }
+  .field-label { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gy); }
+  .input {
+    width: 100%; padding: 10px 12px; border-radius: 10px;
+    border: 1.5px solid #E8E8E8; font-size: 13px; outline: none;
+    background: white; color: var(--bk); font-weight: 600; font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input:focus { border-color: var(--or); box-shadow: 0 0 0 3px var(--focus); }
 
-    button.primary {
-      background: linear-gradient(180deg, rgba(175,77,3,1), rgba(175,77,3,0.82));
-      border-color: rgba(0,0,0,0.45);
-    }
+  .btn-submit-rest {
+    padding: 12px 20px; border-radius: 999px;
+    background: var(--or); color: white;
+    font-size: 13px; font-weight: 800; border: none;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.03em;
+    transition: transform 100ms ease;
+  }
+  .btn-submit-rest:hover { transform: translateY(-1px); }
+  .btn-submit-rest:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .help { font-size: 10px; color: var(--gy); margin-top: 8px; line-height: 1.4; }
 
-    button.primary:hover {
-      background: linear-gradient(180deg, rgba(175,77,3,1), rgba(175,77,3,0.88));
-    }
+  .footer-note {
+    text-align: center; font-size: 10px; font-weight: 600;
+    color: rgba(0,0,0,0.35); padding: 12px; display: flex;
+    align-items: center; justify-content: center; gap: 4px;
+  }
 
-    button.ghost {
-      background: rgba(0,0,0,0.10);
-      border-color: rgba(0,0,0,0.30);
-      font-size: 12px;
-      padding: 7px 12px;
-    }
-
-    button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .roulette {
-      display: grid;
-      gap: 12px;
-    }
-
-    .stage {
-      border: 1px dashed rgba(0,0,0,0.30);
-      border-radius: 16px;
-      padding: 16px;
-      background: rgba(255,255,255,0.08);
-      min-height: 240px;
-      display: grid;
-      align-content: center;
-      gap: 12px;
-      position: relative;
+  /* ── DESKTOP ── */
+  @media (min-width: 480px) {
+    body { background: #181818; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+    .app-shell {
+      border-radius: 44px;
       overflow: hidden;
-      transition: box-shadow 200ms ease, background 200ms ease;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08);
+      min-height: auto;
+      max-height: 90vh;
+      overflow-y: auto;
     }
+    .app-shell::-webkit-scrollbar { display: none; }
+    .status-bar { display: flex; }
+  }
+  @media (max-width: 479px) {
+    .status-bar { display: none; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
 
-    .is-spinning .stage {
-      background: rgba(0,0,0,0.10);
-      box-shadow: 0 18px 34px rgba(0,0,0,0.22);
-    }
-
-    .spinOverlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.00), rgba(0,0,0,0.14));
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 180ms ease;
-    }
-
-    .is-spinning .spinOverlay { opacity: 1; }
-
-    .wheelWrap {
-      display: grid;
-      place-items: center;
-      gap: 12px;
-      position: relative;
-    }
-
-    .wheelRow {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 16px;
-      align-items: center;
-      width: 100%;
-      position: relative;
-      z-index: 1;
-    }
-
-    .wheelBox {
-      position: relative;
-      width: 260px;
-      height: 260px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto;
-      transform: translateZ(0);
-    }
-
-    .pointer {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0; height: 0;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-bottom: 22px solid rgba(0,0,0,0.70);
-      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.18));
-      z-index: 3;
-    }
-
-    .wheel {
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      border: 7px solid rgba(255,255,255,0.95);
-      background:
-        radial-gradient(circle at 50% 50%, rgba(0,0,0,0.18) 0 22%, transparent 23%),
-        conic-gradient(
-          #2E86DE 0deg 45deg,
-          #27AE60 45deg 90deg,
-          #8E44AD 90deg 135deg,
-          #E74C3C 135deg 180deg,
-          #F1C40F 180deg 225deg,
-          #16A085 225deg 270deg,
-          #D35400 270deg 315deg,
-          #C0392B 315deg 360deg
-        );
-      box-shadow:
-        0 18px 28px rgba(0,0,0,0.22),
-        inset 0 0 0 6px rgba(0,0,0,0.18);
-      position: relative;
-      transform: rotate(0deg);
-      transition: transform 2.25s cubic-bezier(.12,.72,.18,1);
-      will-change: transform;
-    }
-
-    .wheel::after {
-      content: "";
-      position: absolute;
-      inset: 50% auto auto 50%;
-      transform: translate(-50%, -50%);
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.70);
-      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
-    }
-
-    .wheelDots {
-      position: absolute;
-      inset: -10px;
-      border-radius: 999px;
-      pointer-events: none;
-      background:
-        radial-gradient(circle, rgba(255,255,255,0.95) 2px, transparent 3px) 0 0 / 18px 18px;
-      mask: radial-gradient(circle, transparent 62%, #000 63% 100%);
-      opacity: 0.95;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.14));
-    }
-
-    .resultBlock {
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,0.22);
-      background: rgba(255,255,255,0.10);
-      min-height: 160px;
-      display: grid;
-      align-content: center;
-    }
-
-    .result-name {
-      font-size: clamp(24px, 4vw, 30px);
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      margin: 0;
-      color: var(--text);
-    }
-
-    .result-meta {
-      margin: 6px 0 0;
-      line-height: 1.4;
-      color: rgba(255,255,255,0.88);
-      font-weight: 700;
-      font-size: 14px;
-      opacity: 0.92;
-    }
-
-    .result-enter {
-      animation: resultIn 520ms cubic-bezier(.2,.9,.2,1) both;
-    }
-
-    @keyframes resultIn {
-      0%   { opacity: 0; transform: translateY(12px) scale(0.96); }
-      70%  { opacity: 1; transform: translateY(-2px) scale(1.01); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-
-    .hidden { display: none !important; }
-
-    /* Email */
-    .email-form {
-      margin-top: 10px;
-      padding: 14px;
-      border: 1px solid rgba(0,0,0,0.22);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.10);
-    }
-
-    .email-row { display:flex; gap:8px; flex-wrap:wrap; align-items: center; }
-
-    .email-input {
-      flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.30);
-      font-size: 14px;
-      outline: none;
-      min-width: 220px;
-    }
-
-    .email-input:focus {
-      border-color: rgba(0,0,0,0.45);
-      box-shadow: 0 0 0 3px var(--focus);
-    }
-
-    .thanks {
-      margin-top: 10px;
-      padding: 14px;
-      border: 1px solid rgba(0,0,0,0.22);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.10);
-    }
-
-    /* Form restaurante */
-    .rest-form {
-      padding: 18px;
-      border: 1px solid rgba(0,0,0,0.22);
-      border-radius: var(--radius);
-      background: rgba(0,0,0,0.10);
-      box-shadow: 0 14px 40px rgba(0,0,0,0.12);
-    }
-
-    .rest-form h3 {
-      margin: 0 0 8px;
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .grid2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .grid1 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.30);
-      font-size: 14px;
-      outline: none;
-      background: rgba(255,255,255,0.92);
-      color: rgba(0,0,0,0.90);
-      font-weight: 700;
-    }
-
-    .input:focus {
-      border-color: rgba(0,0,0,0.45);
-      box-shadow: 0 0 0 3px var(--focus);
-    }
-
-    .help {
-      margin: 8px 0 0;
-      font-size: 12px;
-      color: rgba(255,255,255,0.86);
-      line-height: 1.45;
-    }
-
-    .footer-note {
-      margin: 0;
-      color: rgba(255,255,255,0.88);
-      font-size: 12px;
-      line-height: 1.5;
-      text-align: center;
-      opacity: 0.95;
-    }
-
-    @media (max-width: 780px) {
-      .wheelRow { grid-template-columns: 1fr; }
-      .resultBlock { min-height: 120px; }
-    }
-
-    @media (max-width: 620px) {
-      .grid2 { grid-template-columns: 1fr; }
-      .email-row { flex-direction: column; align-items: stretch; }
-      .email-input { min-width: auto; width: 100%; }
-      .wheelBox { width: 230px; height: 230px; }
-      .wheel { width: 230px; height: 230px; }
-      .actions > * { flex: 1 1 auto; }
-    }
   </style>
 </head>
 
 <body>
-  <main class="container">
-    <header>
-      <div class="brand">
-        <h1 class="logo">Chef Roulette</h1>
-        <span class="beta">Beta</span>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-shell">
+
+    <!-- STATUS BAR (desktop only) -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-icons">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M1 6l5 5 6-7 6 7 5-5"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/></svg>
       </div>
+    </div>
 
-      <div class="pill">Restaurantes: <span id="count">0</span></div>
-
-      <p class="tagline">
-        ¿No sabes dónde cenar en Madrid? Gira la ruleta y decide en segundos. Más de 900 restaurantes reales. Sin discutir, sin perder tiempo.
-      </p>
-    </header>
-
-    <section class="card roulette" id="rouletteCard">
-      <h2>Ruleta</h2>
-
-      <!-- FILTROS MULTI-CHIP -->
-      <div class="filter-block">
-        <div class="filter-row">
-          <div class="label">Tipo de cocina</div>
-          <div class="chips-wrap" id="typeChips">
-            <!-- Se genera dinámicamente -->
-          </div>
-        </div>
-        <div class="filter-row">
-          <div class="label">Zona</div>
-          <div class="chips-wrap" id="zoneChips">
-            <!-- Se genera dinámicamente -->
+    <!-- HEADER -->
+    <div class="app-header">
+      <div class="header-row">
+        <h1 class="logo">Chef<br>Roulette</h1>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="beta-badge">Beta</span>
+          <div class="cnt-pill">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            <span id="count">0</span> restaurantes
           </div>
         </div>
       </div>
 
-      <div class="subbar">
-        <div class="subpill">Opciones con estos filtros: <span id="poolCount">0</span></div>
-        <button class="ghost" id="clearFiltersBtn" type="button">Limpiar filtros</button>
+      <div class="hero-q">¿No sabes dónde cenar en Madrid?</div>
+      <div class="hero-h">GIRA LA RULETA<br>Y DECIDE EN<br>SEGUNDOS.</div>
+      <div class="hero-s">Más de 900 restaurantes reales.<br>Sin discutir, sin perder tiempo.</div>
+
+      <button class="btn-spin-main" id="spinBtn" type="button">
+        <div class="btn-spin-ic">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        ¡Gira y decide!
+      </button>
+
+      <div class="mini-steps">
+        <div class="ms">
+          <div class="ms-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div>
+          <div class="ms-t">Filtra por zona<br>o tipo de cocina</div>
+        </div>
+        <div class="ms">
+          <div class="ms-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
+          <div class="ms-t">Gira la ruleta</div>
+        </div>
+        <div class="ms">
+          <div class="ms-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+          <div class="ms-t">Come.<br>Sin discutir.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREAM SECTION -->
+    <div class="cream-section">
+      <div class="sheet-handle"></div>
+
+      <!-- FILTROS -->
+      <div class="filter-sheet" id="filterSheet">
+        <div class="filter-title">Personaliza tu búsqueda</div>
+
+        <div class="filter-sec-t">Tipo de cocina</div>
+        <div class="chips-wrap" id="typeChips"></div>
+
+        <div class="filter-sec-t">Zona de Madrid</div>
+        <div class="chips-wrap" id="zoneChips"></div>
+
+        <div class="filter-subbar">
+          <div class="pool-pill">Opciones: <span id="poolCount">0</span></div>
+          <button class="btn-clear" id="clearFiltersBtn" type="button">Limpiar filtros</button>
+        </div>
+
+        <button class="btn-girar" id="spinBtnSheet" type="button">¡Girar!</button>
       </div>
 
-      <div class="stage" id="stage">
-        <div class="spinOverlay" aria-hidden="true"></div>
+      <!-- WHEEL -->
+      <div class="wheel-area">
+        <div class="wheel-wrap-inner">
+          <div class="canvas-pointer"></div>
+          <canvas id="wheelCanvas" width="220" height="220"></canvas>
+        </div>
+      </div>
 
-        <div class="wheelWrap">
-          <div class="wheelRow">
-            <div class="wheelBox" aria-hidden="true">
-              <div class="pointer"></div>
-              <div class="wheelDots"></div>
-              <div class="wheel" id="wheel"></div>
+      <!-- RESULT BLOCK -->
+      <div class="result-block" id="resultBlock">
+        <div id="emptyState" class="result-empty">
+          <p>Elige filtros (si quieres) y pulsa<br><strong>¡Girar!</strong></p>
+          <p style="margin-top:6px">Puedes seleccionar varias zonas<br>y tipos a la vez.</p>
+        </div>
+        <div id="spinningState" class="result-spinning hidden">
+          <p>Girando…</p>
+        </div>
+        <div id="resultState" class="hidden">
+          <div class="winner-badge-inline">¡Tenemos ganador! 🎉</div>
+          <div class="winner-header">
+            <div class="winner-frame-wrap">
+              <div class="winner-crown">👑</div>
+              <div class="winner-wheel-frame">
+                <canvas id="resultWheelCanvas" width="64" height="64"></canvas>
+              </div>
             </div>
-
-            <div class="resultBlock">
-              <div id="emptyState">
-                <p class="muted small" style="margin:0;">
-                  Elige filtros (si quieres) y pulsa "¡Gira y decide!".
-                </p>
-                <p class="muted small" style="margin:8px 0 0;">
-                  Puedes seleccionar varias zonas y tipos a la vez.
-                </p>
-              </div>
-
-              <div id="spinningState" class="hidden">
-                <p class="muted small" style="margin:0;">Girando…</p>
-                <p class="muted small" style="margin:8px 0 0;">Seleccionando una opción.</p>
-              </div>
-
-              <div id="resultState" class="hidden">
-                <p class="result-name" id="resultName">—</p>
-                <p class="result-meta" id="resultMeta">—</p>
-              </div>
+            <div>
+              <p class="result-name" id="resultName">—</p>
+              <p class="result-meta" id="resultMeta">—</p>
             </div>
-          </div>
-
-          <div class="actions">
-            <button class="primary" id="spinBtn" type="button">¡Gira y decide!</button>
-
-            <a class="btn hidden" id="mapsBtn" target="_blank" rel="noopener noreferrer">Ir al restaurante</a>
-            <a class="btn hidden" id="deliveryBtn" target="_blank" rel="noopener noreferrer">Pedir delivery</a>
-
-            <button class="hidden" id="sendBtn" type="button">Enviar</button>
-            <button class="hidden" id="spinAgainBtn" type="button">Girar otra vez</button>
           </div>
         </div>
       </div>
 
-      <form
-        name="early-access"
-        method="POST"
-        action="/.netlify/forms/submit"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        class="email-form hidden"
-        id="emailForm"
-      >
+      <!-- ACTION BUTTONS -->
+      <div class="actions" id="actionsWrap">
+        <a class="act-btn pr hidden" id="mapsBtn" target="_blank" rel="noopener noreferrer">
+          <div class="act-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div>
+          IR AL RESTAURANTE
+        </a>
+        <a class="act-btn sc hidden" id="deliveryBtn" target="_blank" rel="noopener noreferrer">
+          <div class="act-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/></svg></div>
+          PEDIR DELIVERY
+        </a>
+        <button class="act-btn sc hidden" id="sendBtn" type="button">
+          <div class="act-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+          ENVIAR A AMIGOS
+        </button>
+        <button class="act-btn sc hidden" id="spinAgainBtn" type="button">
+          <div class="act-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
+          GIRAR OTRA VEZ
+        </button>
+      </div>
+
+      <!-- EMAIL FORM -->
+      <form name="early-access" method="POST" action="/.netlify/forms/submit"
+            data-netlify="true" netlify-honeypot="bot-field"
+            class="email-box hidden" id="emailForm">
         <input type="hidden" name="form-name" value="early-access" />
-        <p class="hidden">
-          <label>Si ves esto, no lo completes: <input name="bot-field" /></label>
-        </p>
-
-        <p class="small" style="margin: 0 0 8px;">
-          ¿Quieres acceso anticipado y actualizaciones de la beta?
-        </p>
-
+        <p class="hidden"><label>Si ves esto, no lo completes: <input name="bot-field" /></label></p>
+        <p>¿Quieres acceso anticipado y actualizaciones de la beta?</p>
         <div class="email-row">
           <input class="email-input" type="email" name="email" placeholder="tu@email.com" required />
-          <button type="submit" class="primary" id="emailSubmitBtn">Avisadme</button>
+          <button type="submit" class="btn-avis" id="emailSubmitBtn">Avisadme</button>
         </div>
-
-        <p class="small muted" style="margin: 8px 0 0;">
-          No enviamos spam. Solo avisos.
-        </p>
+        <p class="email-note">No enviamos spam. Solo avisos.</p>
       </form>
 
       <div class="thanks hidden" id="emailThanks">
-        <p style="margin:0; font-weight: 900;">Recibido.</p>
-        <p class="small muted" style="margin:6px 0 0;">
-          Te avisaremos cuando haya novedades.
-        </p>
+        <p style="font-weight:800">Recibido.</p>
+        <p style="font-size:12px;color:#6B6B6B;margin-top:4px">Te avisaremos cuando haya novedades.</p>
       </div>
 
-      <p class="muted small" id="hint" style="margin: 12px 0 0;">
-        Cambios en la hoja de datos se reflejan automáticamente (puede tardar hasta 1 minuto).
-      </p>
-    </section>
+      <!-- ADD RESTAURANT -->
+      <div class="add-restaurant-section" id="restFormSection">
+        <h3>Añade tu restaurante</h3>
+        <p>¿Tienes un restaurante? Añádelo gratis ahora (Beta). Llega a usuarios que ya están buscando dónde comer.</p>
 
-    <!-- Formulario para restaurantes (Netlify Forms) -->
-    <section class="rest-form" id="restFormSection">
-      <h3>Añade tu restaurante</h3>
-      <p class="small muted" style="margin:0;">
-        ¿Tienes un restaurante? Añádelo gratis ahora (Beta). Llega a usuarios que ya están buscando dónde comer.
-      </p>
+        <form name="add-restaurant" method="POST" action="/.netlify/forms/submit"
+              data-netlify="true" netlify-honeypot="bot-field-restaurant" id="restaurantForm">
+          <input type="hidden" name="form-name" value="add-restaurant" />
+          <p class="hidden"><label>Si ves esto, no lo completes: <input name="bot-field-restaurant" /></label></p>
 
-      <form
-        name="add-restaurant"
-        method="POST"
-        action="/.netlify/forms/submit"
-        data-netlify="true"
-        netlify-honeypot="bot-field-restaurant"
-        id="restaurantForm"
-        style="margin-top: 10px;"
-      >
-        <input type="hidden" name="form-name" value="add-restaurant" />
-        <p class="hidden">
-          <label>Si ves esto, no lo completes: <input name="bot-field-restaurant" /></label>
-        </p>
-
-        <div class="grid2">
-          <div class="field">
-            <div class="label">Nombre</div>
-            <input class="input" type="text" name="nombre" placeholder="Nombre del restaurante" required />
+          <div class="grid2">
+            <div class="field">
+              <div class="field-label">Nombre</div>
+              <input class="input" type="text" name="nombre" placeholder="Nombre del restaurante" required />
+            </div>
+            <div class="field">
+              <div class="field-label">Tipo</div>
+              <input class="input" type="text" name="tipo" placeholder="Italiana, Sushi…" required />
+            </div>
           </div>
-          <div class="field">
-            <div class="label">Tipo</div>
-            <input class="input" type="text" name="tipo" placeholder="Italiana, Sushi, Mexicana…" required />
+          <div class="grid2">
+            <div class="field">
+              <div class="field-label">Zona</div>
+              <input class="input" type="text" name="zona" placeholder="Chueca, Chamberí…" required />
+            </div>
+            <div class="field">
+              <div class="field-label">Contacto</div>
+              <input class="input" type="text" name="contacto" placeholder="Email o teléfono" required />
+            </div>
           </div>
+          <div class="grid1">
+            <div class="field">
+              <div class="field-label">Link Google Maps</div>
+              <input class="input" type="url" name="link_ubicacion" placeholder="https://maps.google.com/..." />
+            </div>
+            <div class="field">
+              <div class="field-label">Link delivery</div>
+              <input class="input" type="url" name="link_delivery" placeholder="Glovo / Uber Eats / Just Eat…" />
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <button class="btn-submit-rest" type="submit" id="restaurantSubmitBtn">Enviar</button>
+            <span style="font-size:11px;color:#999">Tardamos poco en revisarlo.</span>
+          </div>
+          <p class="help">Al enviar aceptas que usemos estos datos solo para mostrar tu restaurante en la beta.</p>
+        </form>
+
+        <div class="thanks hidden" id="restaurantThanks">
+          <p style="font-weight:800">Recibido.</p>
+          <p style="font-size:12px;color:#6B6B6B;margin-top:4px">Gracias. Lo revisamos y lo añadimos en cuanto esté listo.</p>
         </div>
-
-        <div class="grid2">
-          <div class="field">
-            <div class="label">Zona</div>
-            <input class="input" type="text" name="zona" placeholder="Chueca, Chamberí, Retiro…" required />
-          </div>
-          <div class="field">
-            <div class="label">Contacto</div>
-            <input class="input" type="text" name="contacto" placeholder="Email o teléfono" required />
-          </div>
-        </div>
-
-        <div class="grid1">
-          <div class="field">
-            <div class="label">Link ubicación (Google Maps)</div>
-            <input class="input" type="url" name="link_ubicacion" placeholder="https://maps.google.com/..." />
-          </div>
-          <div class="field">
-            <div class="label">Link delivery</div>
-            <input class="input" type="url" name="link_delivery" placeholder="Glovo / Uber Eats / Just Eat / web…" />
-          </div>
-          <div class="field">
-            <div class="label">Imagen (URL)</div>
-            <input class="input" type="url" name="imagen" placeholder="https://... (opcional)" />
-          </div>
-        </div>
-
-        <div class="subbar" style="margin-top: 12px;">
-          <button class="primary" type="submit" id="restaurantSubmitBtn">Enviar</button>
-          <div class="small muted" style="margin:0;">
-            Tardamos poco en revisarlo.
-          </div>
-        </div>
-
-        <p class="help">
-          Al enviar este formulario aceptas que revisemos los datos y los usemos únicamente para mostrar tu restaurante en la beta.
-        </p>
-      </form>
-
-      <div class="thanks hidden" id="restaurantThanks">
-        <p style="margin:0; font-weight: 900;">Recibido.</p>
-        <p class="small muted" style="margin:6px 0 0;">
-          Gracias. Lo revisamos y lo añadimos en cuanto esté listo.
-        </p>
       </div>
-    </section>
 
-    <p class="footer-note">Chef Roulette (Beta)</p>
-  </main>
+      <div class="footer-note">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        chefroulette.app · Beta
+      </div>
+    </div>
+  </div><!-- /app-shell -->
 
   <script>
-    // Fallback local
+    // ── FALLBACK DATA ────────────────────────────────────────────────
     const FALLBACK_RESTAURANTS = [
-      { id: "r1", name: "La Mesa Invisible", cuisine: "Mediterránea", zone: "Centro", deliveryUrl: "", mapsUrl: "", image: "" },
-      { id: "r2", name: "Sushi Kintsugi", cuisine: "Sushi", zone: "Salamanca", deliveryUrl: "", mapsUrl: "", image: "" },
-      { id: "r3", name: "Brasa Norte", cuisine: "Parrilla", zone: "Chamberí", deliveryUrl: "", mapsUrl: "", image: "" },
-      { id: "r4", name: "Pasta & Punto", cuisine: "Italiana", zone: "Retiro", deliveryUrl: "", mapsUrl: "", image: "" },
-      { id: "r5", name: "Taco Ritmo", cuisine: "Mexicana", zone: "Malasaña", deliveryUrl: "", mapsUrl: "", image: "" }
+      { id:"r1", name:"La Mesa Invisible",  cuisine:"Mediterránea", zone:"Centro",    deliveryUrl:"", mapsUrl:"", image:"" },
+      { id:"r2", name:"Sushi Kintsugi",     cuisine:"Sushi",        zone:"Salamanca", deliveryUrl:"", mapsUrl:"", image:"" },
+      { id:"r3", name:"Brasa Norte",        cuisine:"Parrilla",     zone:"Chamberí",  deliveryUrl:"", mapsUrl:"", image:"" },
+      { id:"r4", name:"Pasta & Punto",      cuisine:"Italiana",     zone:"Retiro",    deliveryUrl:"", mapsUrl:"", image:"" },
+      { id:"r5", name:"Taco Ritmo",         cuisine:"Mexicana",     zone:"Malasaña",  deliveryUrl:"", mapsUrl:"", image:"" },
     ];
-
     let RESTAURANTS = [...FALLBACK_RESTAURANTS];
 
-    // Estado: ahora los filtros son arrays (multi-select)
     const state = {
       recentPickedIds: [],
       isSpinning: false,
       spinCount: 0,
-      filters: {
-        cuisines: [],  // array — vacío = todos
-        zones: []      // array — vacío = todas
-      }
+      filters: { cuisines: [], zones: [] }
     };
-
     let lastRestaurant = null;
 
+    // ── HELPERS ───────────────────────────────────────────────────────
     function mapsUrlFor(r) {
-      if (r.mapsUrl && String(r.mapsUrl).trim().length > 0) return r.mapsUrl;
-      const q = encodeURIComponent(`${r.name} Madrid`);
-      return `https://www.google.com/maps/search/?api=1&query=${q}`;
+      if (r.mapsUrl && String(r.mapsUrl).trim()) return r.mapsUrl;
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + ' Madrid')}`;
     }
-
     function deliveryUrlFor(r) {
-      if (r.deliveryUrl && String(r.deliveryUrl).trim().length > 0) return r.deliveryUrl;
-      const q = encodeURIComponent(`${r.cuisine} delivery Madrid`);
-      return `https://www.google.com/search?q=${q}`;
+      if (r.deliveryUrl && String(r.deliveryUrl).trim()) return r.deliveryUrl;
+      return `https://www.google.com/search?q=${encodeURIComponent(r.cuisine + ' delivery Madrid')}`;
     }
-
     function pickRandomAvoidingRecent(list, recentIds, avoidCount = 3) {
-      if (!Array.isArray(list) || list.length === 0) return null;
+      if (!list?.length) return null;
       if (list.length === 1) return list[0];
-
-      const avoidSet = new Set((recentIds || []).slice(-avoidCount));
-      let candidate = null;
-      let guard = 0;
-
-      do {
-        const idx = Math.floor(Math.random() * list.length);
-        candidate = list[idx];
-        guard += 1;
-      } while (candidate && avoidSet.has(candidate.id) && guard < 60);
-
-      return candidate;
+      const avoid = new Set((recentIds||[]).slice(-avoidCount));
+      let c = null, g = 0;
+      do { c = list[Math.floor(Math.random()*list.length)]; g++; }
+      while (c && avoid.has(c.id) && g < 60);
+      return c;
+    }
+    function uniqSorted(vals) {
+      return [...new Set(vals.map(v=>String(v||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
+    }
+    function escapeHtml(s) {
+      return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+    function encodeFormData(form) {
+      return [...new FormData(form).entries()].map(([k,v])=>encodeURIComponent(k)+"="+encodeURIComponent(String(v))).join("&");
     }
 
-    function uniqSorted(values) {
-      const s = new Set();
-      for (const v of values) {
-        const t = String(v || "").trim();
-        if (t) s.add(t);
-      }
-      return Array.from(s).sort((a, b) => a.localeCompare(b, "es"));
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    // Filtrado multi-select
+    // ── FILTERING ─────────────────────────────────────────────────────
     function getFilteredRestaurants() {
-      const { cuisines, zones } = state.filters;
-      return RESTAURANTS.filter(r => {
-        const okCuisine = cuisines.length === 0 || cuisines.includes(String(r.cuisine).trim());
-        const okZone    = zones.length === 0    || zones.includes(String(r.zone).trim());
-        return okCuisine && okZone;
-      });
+      const {cuisines,zones} = state.filters;
+      return RESTAURANTS.filter(r=>
+        (!cuisines.length || cuisines.includes(String(r.cuisine).trim())) &&
+        (!zones.length    || zones.includes(String(r.zone).trim()))
+      );
     }
-
     function updatePoolCount() {
-      const n = getFilteredRestaurants().length;
-      poolCountEl.textContent = String(n);
-      return n;
+      poolCountEl.textContent = String(getFilteredRestaurants().length);
     }
 
-    // ---- CHIPS ----
+    // ── CHIPS ─────────────────────────────────────────────────────────
     function buildChips(containerId, values, filterKey) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = "";
-
+      const c = document.getElementById(containerId);
+      c.innerHTML = "";
       for (const val of values) {
         const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "chip";
-        btn.textContent = val;
-        btn.dataset.value = val;
-
+        btn.type = "button"; btn.className = "chip"; btn.textContent = val; btn.dataset.value = val;
         btn.addEventListener("click", () => {
           if (state.isSpinning) return;
-
           const arr = state.filters[filterKey];
           const idx = arr.indexOf(val);
-
-          if (idx === -1) {
-            arr.push(val);
-            btn.classList.add("active");
-          } else {
-            arr.splice(idx, 1);
-            btn.classList.remove("active");
-          }
-
-          track("filter_change", {
-            filter: filterKey,
-            value: val,
-            selected: arr.includes(val),
-            total_selected: arr.length
-          });
-
+          if (idx === -1) { arr.push(val); btn.classList.add("active"); }
+          else            { arr.splice(idx,1); btn.classList.remove("active"); }
+          track("filter_change", {filter:filterKey,value:val,selected:arr.includes(val),total_selected:arr.length});
           updatePoolCount();
         });
-
-        container.appendChild(btn);
+        c.appendChild(btn);
       }
     }
-
     function buildFilterChips() {
-      const cuisines = uniqSorted(RESTAURANTS.map(r => r.cuisine));
-      const zones    = uniqSorted(RESTAURANTS.map(r => r.zone));
-
-      // Mantener selección previa si sigue siendo válida
-      state.filters.cuisines = state.filters.cuisines.filter(c => cuisines.includes(c));
-      state.filters.zones    = state.filters.zones.filter(z => zones.includes(z));
-
+      const cuisines = uniqSorted(RESTAURANTS.map(r=>r.cuisine));
+      const zones    = uniqSorted(RESTAURANTS.map(r=>r.zone));
+      state.filters.cuisines = state.filters.cuisines.filter(c=>cuisines.includes(c));
+      state.filters.zones    = state.filters.zones.filter(z=>zones.includes(z));
       buildChips("typeChips", cuisines, "cuisines");
       buildChips("zoneChips", zones, "zones");
-
-      // Restaurar estado visual
-      restoreChipState("typeChips", state.filters.cuisines);
-      restoreChipState("zoneChips", state.filters.zones);
-
+      document.querySelectorAll("#typeChips .chip").forEach(b=>{if(state.filters.cuisines.includes(b.dataset.value))b.classList.add("active");});
+      document.querySelectorAll("#zoneChips .chip").forEach(b=>{if(state.filters.zones.includes(b.dataset.value))b.classList.add("active");});
       updatePoolCount();
     }
-
-    function restoreChipState(containerId, activeValues) {
-      const container = document.getElementById(containerId);
-      container.querySelectorAll(".chip").forEach(btn => {
-        if (activeValues.includes(btn.dataset.value)) {
-          btn.classList.add("active");
-        }
-      });
-    }
-
     function clearAllFilters() {
-      state.filters.cuisines = [];
-      state.filters.zones = [];
+      state.filters.cuisines = []; state.filters.zones = [];
+      document.querySelectorAll(".chip.active").forEach(c=>c.classList.remove("active"));
+      track("filter_clear"); updatePoolCount();
+    }
+    function setChipsDisabled(v) { document.querySelectorAll(".chip").forEach(c=>c.disabled=v); }
 
-      document.querySelectorAll(".chip.active").forEach(c => c.classList.remove("active"));
+    // ── UI STATE ──────────────────────────────────────────────────────
+    const countEl        = document.getElementById("count");
+    const emptyState     = document.getElementById("emptyState");
+    const spinningState  = document.getElementById("spinningState");
+    const resultState    = document.getElementById("resultState");
+    const resultName     = document.getElementById("resultName");
+    const resultMeta     = document.getElementById("resultMeta");
+    const spinBtn        = document.getElementById("spinBtn");
+    const spinBtnSheet   = document.getElementById("spinBtnSheet");
+    const spinAgainBtn   = document.getElementById("spinAgainBtn");
+    const mapsBtn        = document.getElementById("mapsBtn");
+    const deliveryBtn    = document.getElementById("deliveryBtn");
+    const sendBtn        = document.getElementById("sendBtn");
+    const clearFiltersBtn= document.getElementById("clearFiltersBtn");
+    const poolCountEl    = document.getElementById("poolCount");
+    const emailForm      = document.getElementById("emailForm");
+    const emailThanks    = document.getElementById("emailThanks");
+    const emailSubmitBtn = document.getElementById("emailSubmitBtn");
+    const restaurantForm = document.getElementById("restaurantForm");
+    const restaurantThanks    = document.getElementById("restaurantThanks");
+    const restaurantSubmitBtn = document.getElementById("restaurantSubmitBtn");
+    const restFormSection     = document.getElementById("restFormSection");
 
-      track("filter_clear");
-      updatePoolCount();
+    function setView(v) {
+      emptyState.classList.toggle("hidden",   v!=="empty");
+      spinningState.classList.toggle("hidden",v!=="spinning");
+      resultState.classList.toggle("hidden",  v!=="result");
+    }
+    function setActionButtons(has) {
+      mapsBtn.classList.toggle("hidden",      !has);
+      deliveryBtn.classList.toggle("hidden",  !has);
+      sendBtn.classList.toggle("hidden",      !has);
+      spinAgainBtn.classList.toggle("hidden", !has);
+    }
+    function setSpinning(v) {
+      state.isSpinning = v;
+      spinBtnSheet.disabled = spinAgainBtn.disabled = sendBtn.disabled = clearFiltersBtn.disabled = v;
+      setChipsDisabled(v);
     }
 
-    function setChipsDisabled(disabled) {
-      document.querySelectorAll(".chip").forEach(c => (c.disabled = disabled));
-    }
-
-    // ---- Carga de datos ----
-    async function loadRestaurantsFromFunction() {
-      try {
-        const res = await fetch("/.netlify/functions/restaurants", { cache: "no-store" });
-        if (!res.ok) throw new Error("Function error");
-        const data = await res.json();
-
-        const list = Array.isArray(data.restaurants) ? data.restaurants : [];
-        if (list.length === 0) throw new Error("Empty list");
-
-        RESTAURANTS = list;
-        countEl.textContent = String(RESTAURANTS.length);
-
-        buildFilterChips();
-
-        track("airtable_loaded", { count: RESTAURANTS.length });
-      } catch (e) {
-        RESTAURANTS = [...FALLBACK_RESTAURANTS];
-        countEl.textContent = String(RESTAURANTS.length);
-
-        buildFilterChips();
-
-        track("airtable_failed");
-      }
-    }
-
-    // ---- UI bindings ----
-    const countEl      = document.getElementById("count");
-    const rouletteCard = document.getElementById("rouletteCard");
-
-    const emptyState    = document.getElementById("emptyState");
-    const spinningState = document.getElementById("spinningState");
-    const resultState   = document.getElementById("resultState");
-
-    const resultName = document.getElementById("resultName");
-    const resultMeta = document.getElementById("resultMeta");
-
-    const spinBtn      = document.getElementById("spinBtn");
-    const spinAgainBtn = document.getElementById("spinAgainBtn");
-    const mapsBtn      = document.getElementById("mapsBtn");
-    const deliveryBtn  = document.getElementById("deliveryBtn");
-    const sendBtn      = document.getElementById("sendBtn");
-
-    const clearFiltersBtn = document.getElementById("clearFiltersBtn");
-    const poolCountEl     = document.getElementById("poolCount");
-
-    const wheelEl = document.getElementById("wheel");
-    let wheelRotation = 0;
-
-    const emailForm       = document.getElementById("emailForm");
-    const emailThanks     = document.getElementById("emailThanks");
-    const emailSubmitBtn  = document.getElementById("emailSubmitBtn");
-
-    const restaurantForm       = document.getElementById("restaurantForm");
-    const restaurantThanks     = document.getElementById("restaurantThanks");
-    const restaurantSubmitBtn  = document.getElementById("restaurantSubmitBtn");
-    const restFormSection      = document.getElementById("restFormSection");
-
-    // ---- Audio ----
+    // ── AUDIO ─────────────────────────────────────────────────────────
     let audioCtx = null;
     function getAudioCtx() {
-      if (!audioCtx) {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (!Ctx) return null;
-        audioCtx = new Ctx();
-      }
+      if (!audioCtx) { const C=window.AudioContext||window.webkitAudioContext; if(C) audioCtx=new C(); }
       return audioCtx;
     }
-    function beep(freq = 900, duration = 0.03, type = "square", gainValue = 0.05) {
-      const ctx = getAudioCtx();
-      if (!ctx) return;
-      if (ctx.state === "suspended") ctx.resume().catch(() => {});
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      gain.gain.value = gainValue;
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      const now = ctx.currentTime;
-      osc.start(now);
-      osc.stop(now + duration);
+    function beep(freq=900,dur=0.03,type="square",gain=0.05) {
+      const ctx=getAudioCtx(); if(!ctx) return;
+      if(ctx.state==="suspended") ctx.resume().catch(()=>{});
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type=type; o.frequency.value=freq; g.gain.value=gain;
+      o.connect(g); g.connect(ctx.destination);
+      const now=ctx.currentTime; o.start(now); o.stop(now+dur);
     }
     function spinTickPattern() {
-      const ticks = 10;
-      for (let i = 0; i < ticks; i++) {
-        window.setTimeout(() => { beep(650 + i * 35, 0.02, "square", 0.045); }, i * 60);
-      }
-      window.setTimeout(() => { beep(240, 0.06, "sine", 0.06); }, 720);
+      for(let i=0;i<10;i++) setTimeout(()=>beep(650+i*35,0.02,"square",0.045),i*60);
+      setTimeout(()=>beep(240,0.06,"sine",0.06),720);
     }
 
-    // ---- Vistas ----
-    function setView(view) {
-      emptyState.classList.toggle("hidden",    view !== "empty");
-      spinningState.classList.toggle("hidden", view !== "spinning");
-      resultState.classList.toggle("hidden",   view !== "result");
-      rouletteCard.classList.toggle("is-spinning", view === "spinning");
-    }
-
-    function setActionButtons(hasResult) {
-      mapsBtn.classList.toggle("hidden",      !hasResult);
-      deliveryBtn.classList.toggle("hidden",  !hasResult);
-      sendBtn.classList.toggle("hidden",      !hasResult);
-      spinAgainBtn.classList.toggle("hidden", !hasResult);
-    }
-
-    function setSpinning(isSpinning) {
-      state.isSpinning = isSpinning;
-      spinBtn.disabled      = isSpinning;
-      spinAgainBtn.disabled = isSpinning;
-      sendBtn.disabled      = isSpinning;
-      clearFiltersBtn.disabled = isSpinning;
-      setChipsDisabled(isSpinning);
-    }
-
-    function spinWheelVisual() {
-      const turns = 360 * (5 + Math.floor(Math.random() * 3));
-      const rand  = Math.floor(Math.random() * 360);
-      wheelRotation = wheelRotation + turns + rand;
-      wheelEl.style.transform = `rotate(${wheelRotation}deg)`;
-    }
-
+    // ── SHOW RESULT ───────────────────────────────────────────────────
     function showResult(r) {
       lastRestaurant = r;
-
-      track("result_shown", {
-        restaurant: r.name,
-        cuisine: r.cuisine,
-        zone: r.zone,
-        filter_cuisines: state.filters.cuisines.join(",") || "all",
-        filter_zones:    state.filters.zones.join(",")    || "all"
-      });
-
+      track("result_shown",{restaurant:r.name,cuisine:r.cuisine,zone:r.zone,filter_cuisines:state.filters.cuisines.join(",")||"all",filter_zones:state.filters.zones.join(",")||"all"});
       resultState.classList.remove("result-enter");
       resultName.textContent = r.name;
       resultMeta.textContent = `${r.cuisine} · ${r.zone}`;
       mapsBtn.href     = mapsUrlFor(r);
       deliveryBtn.href = deliveryUrlFor(r);
-
       setActionButtons(true);
       setView("result");
-
       void resultState.offsetWidth;
       resultState.classList.add("result-enter");
-
       emailForm.classList.remove("hidden");
       emailThanks.classList.add("hidden");
+      // 🎉 Confetti!
+      launchConfetti();
     }
 
+    // ── SPIN ──────────────────────────────────────────────────────────
     function spin() {
       if (state.isSpinning) return;
-
       getAudioCtx();
-
       const filtered = getFilteredRestaurants();
-      track("spin", {
-        filter_cuisines: state.filters.cuisines.join(",") || "all",
-        filter_zones:    state.filters.zones.join(",")    || "all",
-        pool_size: filtered.length
-      });
-
+      track("spin",{filter_cuisines:state.filters.cuisines.join(",")||"all",filter_zones:state.filters.zones.join(",")||"all",pool_size:filtered.length});
       setSpinning(true);
       setActionButtons(false);
       setView("spinning");
-
       spinTickPattern();
-      spinWheelVisual();
 
-      window.setTimeout(() => {
+      // Canvas spin animation
+      animateSpinCanvas(() => {
         const picked = pickRandomAvoidingRecent(filtered, state.recentPickedIds, 3);
-
         if (!picked) {
-          lastRestaurant = null;
-          setSpinning(false);
-          setActionButtons(false);
-          setView("empty");
-          emptyState.innerHTML = `
-            <p class="muted small" style="margin:0;">No hay restaurantes con esos filtros.</p>
-            <p class="muted small" style="margin:8px 0 0;">Prueba a cambiar la selección o pulsa "Limpiar filtros".</p>
-          `;
+          lastRestaurant = null; setSpinning(false); setActionButtons(false); setView("empty");
+          emptyState.innerHTML = '<p>No hay restaurantes con esos filtros.</p><p style="margin-top:6px">Prueba a cambiar la selección o pulsa <strong>Limpiar filtros</strong>.</p>';
           return;
         }
-
-        emptyState.innerHTML = `
-          <p class="muted small" style="margin:0;">Elige filtros (si quieres) y pulsa "¡Girar ruleta!".</p>
-          <p class="muted small" style="margin:8px 0 0;">Puedes seleccionar varias zonas y tipos a la vez.</p>
-        `;
-
+        emptyState.innerHTML = '<p>Elige filtros (si quieres) y pulsa <strong>¡Girar!</strong></p><p style="margin-top:6px">Puedes seleccionar varias zonas y tipos a la vez.</p>';
         state.recentPickedIds.push(picked.id);
         if (state.recentPickedIds.length > 10) state.recentPickedIds.shift();
-        state.spinCount += 1;
-
+        state.spinCount++;
         showResult(picked);
         setSpinning(false);
-      }, 900);
+      });
     }
 
-    // Envío del resultado por WhatsApp
+    // ── SEND WHATSAPP ─────────────────────────────────────────────────
     function sendResultViaWhatsApp() {
       if (!lastRestaurant) return;
-
-      track("send_click", {
-        restaurant: lastRestaurant.name,
-        cuisine: lastRestaurant.cuisine,
-        zone: lastRestaurant.zone
-      });
-
-      const text =
-        `🎰 La ruleta de Chef Roulette eligió: *${lastRestaurant.name}*\n` +
-        `${lastRestaurant.cuisine} · ${lastRestaurant.zone}\n\n` +
-        `Pruébala tú también: https://chefroulette.netlify.app/`;
-
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      track("send_click",{restaurant:lastRestaurant.name});
+      const text = `🎰 La ruleta de Chef Roulette eligió: *${lastRestaurant.name}*\n${lastRestaurant.cuisine} · ${lastRestaurant.zone}\n\nPruébala tú también: https://chefroulette.app/`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");
     }
 
-    function encodeFormData(form) {
-      const data  = new FormData(form);
-      const pairs = [];
-      for (const [key, value] of data.entries()) {
-        pairs.push(encodeURIComponent(key) + "=" + encodeURIComponent(String(value)));
+    // ── DATA LOAD ─────────────────────────────────────────────────────
+    async function loadRestaurantsFromFunction() {
+      try {
+        const res = await fetch("/.netlify/functions/restaurants",{cache:"no-store"});
+        if(!res.ok) throw new Error("Function error");
+        const data = await res.json();
+        const list = Array.isArray(data.restaurants)?data.restaurants:[];
+        if(!list.length) throw new Error("Empty");
+        RESTAURANTS = list;
+        countEl.textContent = String(RESTAURANTS.length);
+        buildFilterChips();
+        track("airtable_loaded",{count:RESTAURANTS.length});
+      } catch(e) {
+        RESTAURANTS = [...FALLBACK_RESTAURANTS];
+        countEl.textContent = String(RESTAURANTS.length);
+        buildFilterChips();
+        track("airtable_failed");
       }
-      return pairs.join("&");
     }
 
-    // ---- Eventos ----
-    spinBtn.addEventListener("click", spin);
+    // ── EVENTS ────────────────────────────────────────────────────────
+    spinBtn.addEventListener("click", () => {
+      document.querySelector(".filter-sheet").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    spinBtnSheet.addEventListener("click", spin);
     spinAgainBtn.addEventListener("click", spin);
     sendBtn.addEventListener("click", sendResultViaWhatsApp);
-
-    mapsBtn.addEventListener("click", () => {
-      if (!lastRestaurant) return;
-      track("maps_click", { restaurant: lastRestaurant.name });
-    });
-
-    deliveryBtn.addEventListener("click", () => {
-      if (!lastRestaurant) return;
-      track("delivery_click", { restaurant: lastRestaurant.name });
-    });
-
+    mapsBtn.addEventListener("click", ()=>lastRestaurant&&track("maps_click",{restaurant:lastRestaurant.name}));
+    deliveryBtn.addEventListener("click", ()=>lastRestaurant&&track("delivery_click",{restaurant:lastRestaurant.name}));
     clearFiltersBtn.addEventListener("click", clearAllFilters);
 
-    // Email submit
     emailForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      emailSubmitBtn.disabled = true;
+      e.preventDefault(); emailSubmitBtn.disabled = true;
       try {
-        const res = await fetch("/.netlify/forms/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: encodeFormData(emailForm)
-        });
-        if (!res.ok) throw new Error("Form submit failed");
+        const res = await fetch("/.netlify/forms/submit",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:encodeFormData(emailForm)});
+        if(!res.ok) throw new Error();
         track("email_submitted");
-        emailForm.classList.add("hidden");
-        emailThanks.classList.remove("hidden");
-        emailForm.reset();
-      } catch (err) {
-        alert("No se pudo enviar el email. Prueba otra vez.");
-      } finally {
-        emailSubmitBtn.disabled = false;
-      }
+        emailForm.classList.add("hidden"); emailThanks.classList.remove("hidden"); emailForm.reset();
+      } catch { alert("No se pudo enviar el email. Prueba otra vez."); }
+      finally { emailSubmitBtn.disabled = false; }
     });
 
-    // Restaurante submit
     restaurantForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      restaurantSubmitBtn.disabled = true;
+      e.preventDefault(); restaurantSubmitBtn.disabled = true;
       try {
         track("restaurant_form_submit_attempt");
-        const res = await fetch("/.netlify/forms/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: encodeFormData(restaurantForm)
-        });
-        if (!res.ok) throw new Error("Restaurant form submit failed");
+        const res = await fetch("/.netlify/forms/submit",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:encodeFormData(restaurantForm)});
+        if(!res.ok) throw new Error();
         track("restaurant_form_submitted");
-        restaurantForm.classList.add("hidden");
-        restaurantThanks.classList.remove("hidden");
-        restaurantForm.reset();
-      } catch (err) {
-        alert("No se pudo enviar el formulario. Prueba otra vez.");
-      } finally {
-        restaurantSubmitBtn.disabled = false;
-      }
+        restaurantForm.classList.add("hidden"); restaurantThanks.classList.remove("hidden"); restaurantForm.reset();
+      } catch { alert("No se pudo enviar el formulario. Prueba otra vez."); }
+      finally { restaurantSubmitBtn.disabled = false; }
     });
 
-    // Visibility tracking del form de restaurante
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          track("restaurant_form_view");
-          observer.disconnect();
-        }
-      }
-    }, { threshold: 0.25 });
-    observer.observe(restFormSection);
+    new IntersectionObserver((entries)=>{
+      if(entries[0].isIntersecting){track("restaurant_form_view");}
+    },{threshold:0.25}).observe(restFormSection);
 
-    // ---- Init ----
+    // ── WHEEL + CONFETTI JS ───────────────────────────────────────────
+
+  // ── WHEEL CANVAS ──────────────────────────────────────────────────
+  const SECTORS = [
+    {color:'#E74C3C',light:'#FF6B6B',emoji:'🍔'},
+    {color:'#F39C12',light:'#FFB74D',emoji:'🍕'},
+    {color:'#27AE60',light:'#4CD964',emoji:'🍜'},
+    {color:'#2980B9',light:'#5DADE2',emoji:'🌮'},
+    {color:'#8E44AD',light:'#BB8FCE',emoji:'🍣'},
+    {color:'#16A085',light:'#48C9B0',emoji:'🥗'},
+    {color:'#E67E22',light:'#F0A500',emoji:'🥘'},
+    {color:'#C0392B',light:'#E74C3C',emoji:'🍱'},
+  ];
+  const N_SEC = SECTORS.length;
+  const TWO_PI = Math.PI * 2;
+  const SLICE = TWO_PI / N_SEC;
+
+  function drawWheelCanvas(canvas, rotation) {
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W/2, cy = H/2, R = W/2 - 2;
+    ctx.clearRect(0,0,W,H);
+
+    for (let i = 0; i < N_SEC; i++) {
+      const start = rotation + i * SLICE - Math.PI/2;
+      const end   = start + SLICE;
+      const mid   = start + SLICE/2;
+      const s = SECTORS[i];
+
+      const grd = ctx.createRadialGradient(
+        cx + Math.cos(mid)*R*0.35, cy + Math.sin(mid)*R*0.35, R*0.05,
+        cx, cy, R
+      );
+      grd.addColorStop(0, s.light);
+      grd.addColorStop(1, s.color);
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, R, start, end);
+      ctx.closePath();
+      ctx.fillStyle = grd;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      const labelR = R * 0.68;
+      const ex = cx + Math.cos(mid) * labelR;
+      const ey = cy + Math.sin(mid) * labelR;
+      ctx.save();
+      ctx.translate(ex, ey);
+      ctx.rotate(mid + Math.PI/2);
+      const fs = Math.max(10, R * 0.14);
+      ctx.font = fs + 'px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(s.emoji, 0, 0);
+      ctx.restore();
+    }
+
+    // outer ring shine
+    const ringGrd = ctx.createLinearGradient(cx-R, cy-R, cx+R, cy+R);
+    ringGrd.addColorStop(0,'rgba(255,255,255,0.60)');
+    ringGrd.addColorStop(0.5,'rgba(255,255,255,0.10)');
+    ringGrd.addColorStop(1,'rgba(0,0,0,0.18)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, TWO_PI);
+    ctx.strokeStyle = ringGrd;
+    ctx.lineWidth = W < 100 ? 4 : 7;
+    ctx.stroke();
+
+    // inner shadow
+    const innerShadow = ctx.createRadialGradient(cx,cy,R*0.75,cx,cy,R);
+    innerShadow.addColorStop(0,'rgba(0,0,0,0)');
+    innerShadow.addColorStop(1,'rgba(0,0,0,0.12)');
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,TWO_PI);
+    ctx.fillStyle = innerShadow; ctx.fill();
+
+    // hub
+    const hubR = R * 0.10;
+    const hubGrd = ctx.createRadialGradient(cx-hubR*0.3,cy-hubR*0.3,hubR*0.1,cx,cy,hubR);
+    hubGrd.addColorStop(0,'#555'); hubGrd.addColorStop(1,'#111');
+    ctx.beginPath(); ctx.arc(cx,cy,hubR,0,TWO_PI);
+    ctx.fillStyle = hubGrd; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1; ctx.stroke();
+  }
+
+  // ── CANVAS ELEMENTS ────────────────────────────────────────────────
+  const mainWheelCanvas   = document.getElementById('wheelCanvas');
+  const resultWheelCanvas = document.getElementById('resultWheelCanvas');
+
+  let wheelRot = 0;
+  let idleRunning = true;
+  let lastIdleTs = 0;
+
+  function idleLoop(ts) {
+    if (!idleRunning) return;
+    const dt = Math.min(ts - lastIdleTs, 50);
+    lastIdleTs = ts;
+    wheelRot += 0.003;
+    drawWheelCanvas(mainWheelCanvas, wheelRot);
+    requestAnimationFrame(idleLoop);
+  }
+  requestAnimationFrame(idleLoop);
+
+  // Result wheel — static, rotated to show burger sector on top
+  drawWheelCanvas(resultWheelCanvas, Math.PI * 0.8);
+
+  // ── CONFETTI ──────────────────────────────────────────────────────
+  const confettiCanvas = document.getElementById('confetti-canvas');
+  const cctx = confettiCanvas.getContext('2d');
+  let confettiParticles = [];
+  let confettiRunning = false;
+
+  function resizeConfetti() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  resizeConfetti();
+  window.addEventListener('resize', resizeConfetti);
+
+  const CONFETTI_COLORS = ['#F67919','#FF9A4C','#FFD700','#FF6B6B','#4CD964','#5AC8FA','#AF4D03','#FFFFFF'];
+
+  function launchConfetti() {
+    confettiParticles = [];
+    for(let i = 0; i < 160; i++) {
+      confettiParticles.push({
+        x: Math.random() * confettiCanvas.width,
+        y: -10 - Math.random() * confettiCanvas.height * 0.3,
+        w: 6 + Math.random() * 8, h: 10 + Math.random() * 6,
+        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.18,
+        vx: (Math.random() - 0.5) * 3,
+        vy: 2.5 + Math.random() * 3.5,
+        alpha: 1,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle',
+      });
+    }
+    confettiRunning = true;
+    requestAnimationFrame(tickConfetti);
+  }
+
+  function tickConfetti() {
+    if (!confettiRunning) return;
+    cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    confettiParticles.forEach(p => {
+      cctx.save();
+      cctx.globalAlpha = p.alpha;
+      cctx.translate(p.x, p.y);
+      cctx.rotate(p.rot);
+      cctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        cctx.beginPath(); cctx.arc(0,0,p.w/2,0,Math.PI*2); cctx.fill();
+      } else {
+        cctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      }
+      cctx.restore();
+      p.x += p.vx; p.y += p.vy; p.rot += p.rotSpeed; p.vy += 0.06;
+      if (p.y > confettiCanvas.height * 0.85) p.alpha -= 0.025;
+    });
+    confettiParticles = confettiParticles.filter(p => p.alpha > 0);
+    if (confettiParticles.length > 0) requestAnimationFrame(tickConfetti);
+    else { confettiRunning = false; cctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }
+  }
+
+  // ── CANVAS SPIN ANIMATION ─────────────────────────────────────────
+  function animateSpinCanvas(onComplete) {
+    idleRunning = false;
+    const totalRot = TWO_PI * (6 + Math.random() * 4) + Math.random() * TWO_PI;
+    const startRot = wheelRot;
+    const dur = 2800;
+    const startT = performance.now();
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+    function frame(now) {
+      const t = Math.min((now - startT) / dur, 1);
+      wheelRot = startRot + totalRot * easeOut(t);
+      drawWheelCanvas(mainWheelCanvas, wheelRot);
+      if (t < 1) { requestAnimationFrame(frame); }
+      else {
+        // Restart idle
+        idleRunning = true;
+        lastIdleTs = performance.now();
+        requestAnimationFrame(idleLoop);
+        onComplete();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+
+    // ── INIT ──────────────────────────────────────────────────────────
     countEl.textContent = String(RESTAURANTS.length);
     buildFilterChips();
     updatePoolCount();
@@ -1260,13 +1071,7 @@
     setActionButtons(false);
     loadRestaurantsFromFunction();
 
-    window.__chefRoulette = {
-      state,
-      getRestaurants: () => RESTAURANTS,
-      getFilteredRestaurants,
-      updatePoolCount,
-      spin
-    };
+    window.__chefRoulette = { state, getRestaurants:()=>RESTAURANTS, getFilteredRestaurants, updatePoolCount, spin };
   </script>
 </body>
 </html>
