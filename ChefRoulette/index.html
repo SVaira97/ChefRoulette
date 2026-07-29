@@ -814,23 +814,52 @@
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");
     }
 
-    // ── DATA LOAD ─────────────────────────────────────────────────────
-    async function loadRestaurantsFromFunction() {
+        // ── DATA LOAD ─────────────────────────────────────────────────────
+    const CACHE_KEY = "cr_restaurants_v1";
+    const CACHE_TTL = 30 * 60 * 1000; // 30 min
+
+    function loadFromCache() {
       try {
-        const res = await fetch("/.netlify/functions/restaurants",{cache:"no-store"});
-        if(!res.ok) throw new Error("Function error");
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const { ts, data } = JSON.parse(raw);
+        if (Date.now() - ts > CACHE_TTL) return null;
+        return data;
+      } catch { return null; }
+    }
+
+    function saveToCache(list) {
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: list })); } catch {}
+    }
+
+    function applyRestaurants(list) {
+      RESTAURANTS = list;
+      countEl.textContent = String(list.length);
+      buildFilterChips();
+    }
+
+    async function loadRestaurantsFromFunction() {
+      // 1. Mostrar cache o fallback inmediatamente — el usuario puede girar ya
+      const cached = loadFromCache();
+      if (cached) {
+        applyRestaurants(cached);
+        track("cache_hit", { count: cached.length });
+      } else {
+        applyRestaurants([...FALLBACK_RESTAURANTS]);
+      }
+
+      // 2. Fetch en background — actualiza silenciosamente cuando llega
+      try {
+        const res = await fetch("/.netlify/functions/restaurants");
+        if (!res.ok) throw new Error("Function error");
         const data = await res.json();
-        const list = Array.isArray(data.restaurants)?data.restaurants:[];
-        if(!list.length) throw new Error("Empty");
-        RESTAURANTS = list;
-        countEl.textContent = String(RESTAURANTS.length);
-        buildFilterChips();
-        track("airtable_loaded",{count:RESTAURANTS.length});
+        const list = Array.isArray(data.restaurants) ? data.restaurants : [];
+        if (!list.length) throw new Error("Empty");
+        saveToCache(list);
+        applyRestaurants(list);
+        track("airtable_loaded", { count: list.length });
       } catch(e) {
-        RESTAURANTS = [...FALLBACK_RESTAURANTS];
-        countEl.textContent = String(RESTAURANTS.length);
-        buildFilterChips();
-        track("airtable_failed");
+        if (!cached) track("airtable_failed");
       }
     }
 
