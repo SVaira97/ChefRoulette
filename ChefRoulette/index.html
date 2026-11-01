@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chef Roulette — Beta</title>
+  <title>Chef Roulette — ¿No sabes dónde comer en Madrid? Gira la ruleta</title>
 
   <!-- Open Graph / social share -->
   <meta property="og:title" content="Chef Roulette — ¿No sabes dónde comer? Gira la ruleta." />
@@ -309,6 +309,7 @@
     margin-bottom: 14px; border: 1px solid rgba(0,0,0,0.06);
   }
   .email-box p { font-size: 12px; color: var(--bk); margin: 0 0 9px; font-weight: 600; line-height: 1.4; }
+  .email-box .email-title { font-size: 13px; font-weight: 800; }
   .email-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .email-input {
     flex: 1; padding: 10px 12px; border-radius: 10px;
@@ -391,7 +392,7 @@
     .grid2 { grid-template-columns: 1fr; }
   }
 
-  
+
   /* ── SOCIAL FOLLOW ── */
   .social-follow {
     display: flex;
@@ -599,18 +600,18 @@
             data-netlify="true" netlify-honeypot="bot-field"
             class="email-box hidden" id="emailForm">
         <input type="hidden" name="form-name" value="early-access" />
-        <p class="hidden"><label>Si ves esto, no lo completes: <input name="bot-field" /></label></p>
-        <p>¿Quieres acceso anticipado y actualizaciones de la beta?</p>
+        <p class="hidden" aria-hidden="true"><label>Si ves esto, no lo completes: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+        <p class="email-title">¿Te avisamos cuando salga la app para móvil?</p>
         <div class="email-row">
-          <input class="email-input" type="email" name="email" placeholder="tu@email.com" required />
-          <button type="submit" class="btn-avis" id="emailSubmitBtn">Avisadme</button>
+          <input class="email-input" type="email" name="email" placeholder="tu@email.com" aria-label="Tu email" required />
+          <button type="submit" class="btn-avis" id="emailSubmitBtn">Avísame</button>
         </div>
-        <p class="email-note">No enviamos spam. Solo avisos.</p>
+        <p class="email-note">Un email cuando esté lista. Nada más.</p>
       </form>
 
       <div class="thanks hidden" id="emailThanks">
         <p style="font-weight:800">Recibido.</p>
-        <p style="font-size:12px;color:#6B6B6B;margin-top:4px">Te avisaremos cuando haya novedades.</p>
+        <p style="font-size:12px;color:#6B6B6B;margin-top:4px">Te avisaremos cuando la app para móvil esté lista.</p>
       </div>
 
       <!-- ADD RESTAURANT -->
@@ -621,7 +622,7 @@
         <form name="add-restaurant" method="POST" action="/.netlify/forms/submit"
               data-netlify="true" netlify-honeypot="bot-field-restaurant" id="restaurantForm">
           <input type="hidden" name="form-name" value="add-restaurant" />
-          <p class="hidden"><label>Si ves esto, no lo completes: <input name="bot-field-restaurant" /></label></p>
+          <p class="hidden" aria-hidden="true"><label>Si ves esto, no lo completes: <input name="bot-field-restaurant" tabindex="-1" autocomplete="off" /></label></p>
 
           <div class="grid2">
             <div class="field">
@@ -697,9 +698,8 @@
       if (r.mapsUrl && String(r.mapsUrl).trim()) return r.mapsUrl;
       return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + ' Madrid')}`;
     }
-    function deliveryUrlFor(r) {
-      if (r.deliveryUrl && String(r.deliveryUrl).trim()) return r.deliveryUrl;
-      return `https://www.google.com/search?q=${encodeURIComponent(r.cuisine + ' delivery Madrid')}`;
+    function deliveryUrlOf(r) {
+      return String((r && r.deliveryUrl) || "").trim();
     }
     function pickRandomAvoidingRecent(list, recentIds, avoidCount = 3) {
       if (!list?.length) return null;
@@ -798,8 +798,9 @@
       resultState.classList.toggle("hidden",  v!=="result");
     }
     function setActionButtons(has) {
+      const hasDelivery = has && deliveryUrlOf(lastRestaurant).length > 0;
       mapsBtn.classList.toggle("hidden",      !has);
-      deliveryBtn.classList.toggle("hidden",  !has);
+      deliveryBtn.classList.toggle("hidden",  !hasDelivery);
       sendBtn.classList.toggle("hidden",      !has);
       spinAgainBtn.classList.toggle("hidden", !has);
       document.getElementById("socialFollow").classList.toggle("hidden", !has);
@@ -832,12 +833,15 @@
     // ── SHOW RESULT ───────────────────────────────────────────────────
     function showResult(r) {
       lastRestaurant = r;
-      track("result_shown",{restaurant:r.name,cuisine:r.cuisine,zone:r.zone,filter_cuisines:state.filters.cuisines.join(",")||"all",filter_zones:state.filters.zones.join(",")||"all"});
+      const deliveryUrl = deliveryUrlOf(r);
+      const hasDelivery = deliveryUrl.length > 0;
+      track("result_shown",{restaurant:r.name,cuisine:r.cuisine,zone:r.zone,has_delivery:hasDelivery,filter_cuisines:state.filters.cuisines.join(",")||"all",filter_zones:state.filters.zones.join(",")||"all"});
       resultState.classList.remove("result-enter");
       resultName.textContent = r.name;
       resultMeta.textContent = `${r.cuisine} · ${r.zone}`;
-      mapsBtn.href     = mapsUrlFor(r);
-      deliveryBtn.href = deliveryUrlFor(r);
+      mapsBtn.href = mapsUrlFor(r);
+      if (hasDelivery) deliveryBtn.href = deliveryUrl;
+      else deliveryBtn.removeAttribute("href");
       setActionButtons(true);
       setView("result");
       void resultState.offsetWidth;
@@ -884,7 +888,7 @@
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");
     }
 
-        // ── DATA LOAD ─────────────────────────────────────────────────────
+    // ── DATA LOAD ─────────────────────────────────────────────────────
     const CACHE_KEY = "cr_restaurants_v1";
     const CACHE_TTL = 30 * 60 * 1000; // 30 min
 
@@ -967,9 +971,14 @@
       finally { restaurantSubmitBtn.disabled = false; }
     });
 
-    new IntersectionObserver((entries)=>{
-      if(entries[0].isIntersecting){track("restaurant_form_view");}
-    },{threshold:0.25}).observe(restFormSection);
+    // Se registra una sola vez por visita
+    const restFormObserver = new IntersectionObserver((entries)=>{
+      if(entries[0].isIntersecting){
+        track("restaurant_form_view");
+        restFormObserver.disconnect();
+      }
+    },{threshold:0.25});
+    restFormObserver.observe(restFormSection);
 
     // ── WHEEL + CONFETTI JS ───────────────────────────────────────────
 
